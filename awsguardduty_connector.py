@@ -280,8 +280,8 @@ class AwsGuarddutyConnector(BaseConnector):
         # Fetch the start_time of polling for the first run
         initial_time = int(time.mktime((end_time - timedelta(self._days)).timetuple()) * 1000)
 
-        if self._state.get('first_run', True) or self.is_poll_now() or ((filter_name or self._state.get('filter_name'))
-                                                                        and filter_name != self._state.get('filter_name')):
+        if self._state.get('first_run', True) or self.is_poll_now() or \
+                ((filter_name or self._state.get('filter_name')) and filter_name != self._state.get('filter_name')):
             criteria_dict = { 'updatedAt': { 'Gt': initial_time } }
             if not self.is_poll_now() and self._state.get('first_run', True):
                 self._state['first_run'] = False
@@ -354,9 +354,9 @@ class AwsGuarddutyConnector(BaseConnector):
 
         # Fetches the details of finding in a bunch of 50 findings
         while list_findings:
-            ret_val, res = self._make_boto_call(
-                                    action_result, 'get_findings', DetectorId=detector_id,
-                FindingIds=list_findings[:min(50, len(list_findings))], SortCriteria=sort_criteria)
+            ret_val, res = self._make_boto_call(action_result, 'get_findings',
+                                                DetectorId=detector_id, FindingIds=list_findings[:min(50, len(list_findings))],
+                                                SortCriteria=sort_criteria)
 
             if phantom.is_fail(ret_val):
                 return action_result.get_status()

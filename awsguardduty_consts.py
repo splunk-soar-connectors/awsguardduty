@@ -74,7 +74,8 @@ AWSGUARDDUTY_BAD_ASSET_CONFIG_ERR_MSG = "Please provide access keys or select as
 # Constants relating to 'get_error_message_from_exception'
 AWSGUARDDUTY_ERR_MSG_UNAVAILABLE = "Error message unavailable. Please check the asset configuration and|or action parameters."
 AWSGUARDDUTY_ERR_CODE_UNAVAILABLE = "Error code unavailable"
-AWSGUARDDUTY_UNICODE_DAMMIT_TYPE_ERR_MSG = "Error occurred while connecting to the AWS GuardDuty server. Please check the asset configuration and|or the action parameters."
+AWSGUARDDUTY_UNICODE_DAMMIT_TYPE_ERR_MSG = "Error occurred while connecting to the AWS GuardDuty server. Please check the " \
+                                           "asset configuration and|or the action parameters."
 
 # Constants relating to 'validate_integer'
 AWSGUARDDUTY_VALID_INT_MSG = "Please provide a valid integer value in the {param}"
