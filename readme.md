@@ -30,9 +30,9 @@ Peterson.
 This app uses the urllib3 module, which is licensed under the MIT License (MIT), Copyright (c)
 Andrey Petrov.
 
-### python_dateutil
+### python-dateutil
 
-This app uses the python_dateutil module, which is licensed under the Apache Software License, BSD
+This app uses the python-dateutil module, which is licensed under the Apache Software License, BSD
 License (Dual License), Copyright (c) Gustavo Niemeyer.
 
 ### jmespath
