@@ -23,13 +23,13 @@ from datetime import datetime, timedelta
 
 import phantom.app as phantom
 import requests
+from boto3 import Session, client
 from botocore.config import Config
 from bs4 import UnicodeDammit
 from phantom.action_result import ActionResult
 from phantom.base_connector import BaseConnector
 
 from awsguardduty_consts import *
-from boto3 import Session, client
 
 
 class RetVal(tuple):
