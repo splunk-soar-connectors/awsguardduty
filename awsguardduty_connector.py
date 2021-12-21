@@ -1,23 +1,35 @@
 # File: awsguardduty_connector.py
+#
 # Copyright (c) 2019-2021 Splunk Inc.
 #
-# Licensed under Apache 2.0 (https://www.apache.org/licenses/LICENSE-2.0.txt)
-
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software distributed under
+# the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
+# either express or implied. See the License for the specific language governing permissions
+# and limitations under the License.
+#
+#
 # Phantom App imports
-import phantom.app as phantom
-from phantom.base_connector import BaseConnector
-from phantom.action_result import ActionResult
-
-import requests
-import json
-import time
-from boto3 import client, Session
-from datetime import datetime, timedelta
-from botocore.config import Config
-from awsguardduty_consts import *
-from bs4 import UnicodeDammit
-import sys
 import ast
+import json
+import sys
+import time
+from datetime import datetime, timedelta
+
+import phantom.app as phantom
+import requests
+from boto3 import Session, client
+from botocore.config import Config
+from bs4 import UnicodeDammit
+from phantom.action_result import ActionResult
+from phantom.base_connector import BaseConnector
+
+from awsguardduty_consts import *
 
 
 class RetVal(tuple):
@@ -218,7 +230,8 @@ class AwsGuarddutyConnector(BaseConnector):
 
         if phantom.is_fail(container_creation_status):
             self.debug_print(container_creation_msg)
-            self.save_progress('{}. {error_message}'.format(AWSGUARDDUTY_CREATE_CONTAINER_ERR_MSG.format(finding_id=finding['Id']), error_message=container_creation_msg))
+            self.save_progress('{}. {error_message}'.format(AWSGUARDDUTY_CREATE_CONTAINER_ERR_MSG.format(
+                finding_id=finding['Id']), error_message=container_creation_msg))
             return None
 
         return container_id
@@ -267,7 +280,8 @@ class AwsGuarddutyConnector(BaseConnector):
         # Fetch the start_time of polling for the first run
         initial_time = int(time.mktime((end_time - timedelta(self._days)).timetuple()) * 1000)
 
-        if self._state.get('first_run', True) or self.is_poll_now() or ((filter_name or self._state.get('filter_name')) and filter_name != self._state.get('filter_name')):
+        if self._state.get('first_run', True) or self.is_poll_now() or \
+                ((filter_name or self._state.get('filter_name')) and filter_name != self._state.get('filter_name')):
             criteria_dict = { 'updatedAt': { 'Gt': initial_time } }
             if not self.is_poll_now() and self._state.get('first_run', True):
                 self._state['first_run'] = False
@@ -307,7 +321,8 @@ class AwsGuarddutyConnector(BaseConnector):
 
             finding_criteria = response.get('FindingCriteria', {})
 
-        # Removing the existing filter criteria of updatedAt and explicitly using the start_time calculated above for the On Poll logic
+        # Removing the existing filter criteria of updatedAt and explicitly using the start_time calculated
+        # above for the On Poll logic
         try:
             finding_criteria['Criterion'].pop('updatedAt')
         except KeyError:
@@ -339,8 +354,9 @@ class AwsGuarddutyConnector(BaseConnector):
 
         # Fetches the details of finding in a bunch of 50 findings
         while list_findings:
-            ret_val, res = self._make_boto_call(
-                                    action_result, 'get_findings', DetectorId=detector_id, FindingIds=list_findings[:min(50, len(list_findings))], SortCriteria=sort_criteria)
+            ret_val, res = self._make_boto_call(action_result, 'get_findings',
+                                                DetectorId=detector_id, FindingIds=list_findings[:min(50, len(list_findings))],
+                                                SortCriteria=sort_criteria)
 
             if phantom.is_fail(ret_val):
                 return action_result.get_status()
@@ -395,7 +411,8 @@ class AwsGuarddutyConnector(BaseConnector):
                                                                                        container_id=container_id)
 
             if phantom.is_fail(artifacts_creation_status):
-                self.debug_print('{}. {error_msg}'.format(AWSGUARDDUTY_CREATE_ARTIFACT_ERR_MSG.format(container_id=container_id), error_msg=artifacts_creation_msg))
+                self.debug_print('{}. {error_msg}'.format(AWSGUARDDUTY_CREATE_ARTIFACT_ERR_MSG.format(
+                    container_id=container_id), error_msg=artifacts_creation_msg))
 
         self.save_progress('Total findings available on the UI of AWS GuardDuty: {}'.format(len(all_findings)))
 
@@ -406,13 +423,15 @@ class AwsGuarddutyConnector(BaseConnector):
         try:
             boto_func = getattr(self._client, method)
         except AttributeError:
-            return RetVal(action_result.set_status(phantom.APP_ERROR, AWSGUARDDUTY_INVALID_METHOD_ERR_MSG.format(method=method)), None)
+            return RetVal(action_result.set_status(phantom.APP_ERROR, AWSGUARDDUTY_INVALID_METHOD_ERR_MSG.format(
+                method=method)), None)
 
         try:
             resp_json = boto_func(**kwargs)
         except Exception as e:
             err_msg = self._get_error_message_from_exception(e)
-            return RetVal(action_result.set_status(phantom.APP_ERROR, '{0}. {1}'.format(AWSGUARDDUTY_BOTO3_CONN_FAILED_MSG, err_msg)), None)
+            return RetVal(action_result.set_status(phantom.APP_ERROR, '{0}. {1}'.format(
+                AWSGUARDDUTY_BOTO3_CONN_FAILED_MSG, err_msg)), None)
 
         try:
             resp_json = self._sanitize_dates(resp_json)
@@ -491,7 +510,8 @@ class AwsGuarddutyConnector(BaseConnector):
         valid_id_found = False
 
         while findings_ids:
-            ret_val, res = self._make_boto_call(action_result, 'get_findings', DetectorId=detector_id, FindingIds=findings_ids[:min(50, len(findings_ids))])
+            ret_val, res = self._make_boto_call(action_result, 'get_findings', DetectorId=detector_id,
+                                                FindingIds=findings_ids[:min(50, len(findings_ids))])
 
             if phantom.is_fail(ret_val):
                 return False, valid_finding_ids
@@ -528,7 +548,8 @@ class AwsGuarddutyConnector(BaseConnector):
             return False, valid_finding_ids
 
         if not valid_finding_ids:
-            action_result.set_status(phantom.APP_SUCCESS, AWSGUARDDUTY_FINDING_ID_IN_RECORD_STATE_ERR_MSG.format(record_state=record_state))
+            action_result.set_status(phantom.APP_SUCCESS, AWSGUARDDUTY_FINDING_ID_IN_RECORD_STATE_ERR_MSG.format(
+                record_state=record_state))
             return False, valid_finding_ids
         return True, valid_finding_ids
 
@@ -560,7 +581,8 @@ class AwsGuarddutyConnector(BaseConnector):
             return action_result.get_status()
 
         while valid_findings_ids:
-            ret_val, response = self._make_boto_call(action_result, 'archive_findings', DetectorId=detector_id, FindingIds=valid_findings_ids[:min(50, len(valid_findings_ids))])
+            ret_val, response = self._make_boto_call(action_result, 'archive_findings', DetectorId=detector_id,
+                                                     FindingIds=valid_findings_ids[:min(50, len(valid_findings_ids))])
             if phantom.is_fail(ret_val):
                 return action_result.get_status()
 
@@ -602,7 +624,8 @@ class AwsGuarddutyConnector(BaseConnector):
         self.debug_print("Valid finding IDs are: \n{}".format(valid_findings_ids))
 
         while valid_findings_ids:
-            ret_val, response = self._make_boto_call(action_result, 'unarchive_findings', DetectorId=detector_id, FindingIds=valid_findings_ids[:min(50, len(valid_findings_ids))])
+            ret_val, response = self._make_boto_call(action_result, 'unarchive_findings', DetectorId=detector_id,
+                                                     FindingIds=valid_findings_ids[:min(50, len(valid_findings_ids))])
             if phantom.is_fail(ret_val):
                 return action_result.get_status()
 
@@ -635,9 +658,11 @@ class AwsGuarddutyConnector(BaseConnector):
 
         while True:
             if next_token:
-                ret_val, response = self._make_boto_call(action_result, method_name, NextToken=next_token, MaxResults=AWSGUARDDUTY_MAX_PER_PAGE_LIMIT, **kwargs)
+                ret_val, response = self._make_boto_call(action_result, method_name, NextToken=next_token,
+                                                         MaxResults=AWSGUARDDUTY_MAX_PER_PAGE_LIMIT, **kwargs)
             else:
-                ret_val, response = self._make_boto_call(action_result, method_name, MaxResults=AWSGUARDDUTY_MAX_PER_PAGE_LIMIT, **kwargs)
+                ret_val, response = self._make_boto_call(action_result, method_name,
+                                                         MaxResults=AWSGUARDDUTY_MAX_PER_PAGE_LIMIT, **kwargs)
 
             if phantom.is_fail(ret_val):
                 return None
@@ -781,7 +806,8 @@ class AwsGuarddutyConnector(BaseConnector):
            return action_result.get_status()
 
         while list_findings:
-            ret_val, res = self._make_boto_call(action_result, 'get_findings', DetectorId=detector_id, FindingIds=list_findings[:min(50, len(list_findings))])
+            ret_val, res = self._make_boto_call(action_result, 'get_findings', DetectorId=detector_id,
+                                                FindingIds=list_findings[:min(50, len(list_findings))])
 
             if phantom.is_fail(ret_val):
                 return action_result.get_status()
@@ -835,7 +861,8 @@ class AwsGuarddutyConnector(BaseConnector):
            return action_result.get_status()
 
         for threat in list_threats:
-            ret_val, res = self._make_boto_call(action_result, 'get_threat_intel_set', DetectorId=detector_id, ThreatIntelSetId=threat)
+            ret_val, res = self._make_boto_call(action_result, 'get_threat_intel_set', DetectorId=detector_id,
+                                                ThreatIntelSetId=threat)
 
             if phantom.is_fail(ret_val):
                 return action_result.get_status()
@@ -1024,8 +1051,9 @@ class AwsGuarddutyConnector(BaseConnector):
 
 if __name__ == '__main__':
 
-    import pudb
     import argparse
+
+    import pudb
 
     pudb.set_trace()
 
