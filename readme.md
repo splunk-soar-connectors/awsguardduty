@@ -2,7 +2,7 @@
 # AWS GuardDuty
 
 Publisher: Splunk  
-Connector Version: 2\.1\.6  
+Connector Version: 2\.1\.9  
 Product Vendor: AWS  
 Product Name: GuardDuty  
 Product Version Supported (regex): "\.\*"  
