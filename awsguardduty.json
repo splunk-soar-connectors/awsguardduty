@@ -10,7 +10,7 @@
     "product_version_regex": ".*",
     "publisher": "Splunk",
     "license": "Copyright (c) 2019-2021 Splunk Inc.",
-    "app_version": "2.1.8",
+    "app_version": "2.1.9",
     "utctime_updated": "2021-12-21T01:44:44.000000Z",
     "package_name": "phantom_awsguardduty",
     "main_module": "awsguardduty_connector.py",
