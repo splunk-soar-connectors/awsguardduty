@@ -96,17 +96,17 @@ documentation](https://docs.aws.amazon.com/iam/index.html) .
 
       
 
--   **Scheduled|Interval Polling**
+-   **Scheduled | Interval Polling**
 
       
 
-    -   The scheduled|interval polling fetches the findings (in oldest first order to ensure zero
+    -   The scheduled | interval polling fetches the findings (in oldest first order to ensure zero
         data loss) based on the same logic of the manual polling for the first run. The 'updatedAt'
         time of the last fetched finding gets stored in this first run.
     -   For the consecutive runs, the findings get fetched after the stored 'updatedAt' time in the
         previous run.
     -   If the `         filter_name        ` gets changed at an intermediate stage of the
-        scheduled|interval polling, the next run of polling will auto-detect the change and it will
+        scheduled | interval polling, the next run of polling will auto-detect the change and it will
         poll the findings and reset the 'updatedAt' time based on the new
         `         filter_name        ` .
 
