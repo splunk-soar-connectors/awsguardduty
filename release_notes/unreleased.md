@@ -1,2 +1,2 @@
 **Unreleased**
-Removed requests dependency in order to use platform packages [PAPP-31096, PAPP-30822]
+* Removed requests dependency in order to use platform packages [PAPP-31096, PAPP-30822]
