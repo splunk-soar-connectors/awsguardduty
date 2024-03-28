@@ -6,7 +6,7 @@ Connector Version: 2.1.10
 Product Vendor: AWS  
 Product Name: GuardDuty  
 Product Version Supported (regex): ".\*"  
-Minimum Product Version: 5.5.0  
+Minimum Product Version: 6.1.1  
 
 This app integrates with AWS GuardDuty to investigate findings
 
@@ -191,7 +191,7 @@ PARAMETER | REQUIRED | DESCRIPTION | TYPE | CONTAINS
 #### Action Output
 DATA PATH | TYPE | CONTAINS | EXAMPLE VALUES
 --------- | ---- | -------- | --------------
-action_result.parameter.credentials | string |  `aws credentials`  |   {'AccessKeyId': 'REDACTED', 'Expiration': 'REDACTED', 'SecretAccessKey': 'REDACTED', 'SessionToken': 'REDACTED'}  <!--- # pragma: allowlist secret -->
+action_result.parameter.credentials | string |  `aws credentials`  |   {'AccessKeyId': 'REDACTED', 'Expiration': 'REDACTED', 'SecretAccessKey': 'REDACTED', 'SessionToken': 'REDACTED'}   
 
 ## action: 'update finding'
 Updates specified Amazon GuardDuty findings as useful or not useful
@@ -223,7 +223,7 @@ action_result.summary.total_updated_findings | numeric |  |   1
 action_result.message | string |  |   Total updated findings: 1 
 summary.total_objects | numeric |  |   1 
 summary.total_objects_successful | numeric |  |   1 
-action_result.parameter.credentials | string |  `aws credentials`  |   {'AccessKeyId': 'REDACTED', 'Expiration': 'REDACTED', 'SecretAccessKey': 'REDACTED', 'SessionToken': 'REDACTED'}   <!--- # pragma: allowlist secret -->
+action_result.parameter.credentials | string |  `aws credentials`  |   {'AccessKeyId': 'REDACTED', 'Expiration': 'REDACTED', 'SecretAccessKey': 'REDACTED', 'SessionToken': 'REDACTED'}   
 
 ## action: 'run query'
 Fetch the findings as per the filters applied
@@ -348,7 +348,7 @@ action_result.summary.total_findings | numeric |  |   1  7
 action_result.message | string |  |   Total findings: 1  Total findings: 7 
 summary.total_objects | numeric |  |   1 
 summary.total_objects_successful | numeric |  |   1 
-action_result.parameter.credentials | string |  `aws credentials`  |   {'AccessKeyId': 'REDACTED', 'Expiration': 'REDACTED', 'SecretAccessKey': 'REDACTED', 'SessionToken': 'REDACTED'}    <!--- # pragma: allowlist secret -->
+action_result.parameter.credentials | string |  `aws credentials`  |   {'AccessKeyId': 'REDACTED', 'Expiration': 'REDACTED', 'SecretAccessKey': 'REDACTED', 'SessionToken': 'REDACTED'}   
 
 ## action: 'archive finding'
 Archives Amazon GuardDuty findings specified by the detector ID and list of finding IDs
@@ -376,7 +376,7 @@ action_result.summary.total_findings | numeric |  |   1
 action_result.message | string |  |   Successfully archived the findings 
 summary.total_objects | numeric |  |   1 
 summary.total_objects_successful | numeric |  |   1 
-action_result.parameter.credentials | string |  `aws credentials`  |   {'AccessKeyId': 'REDACTED', 'Expiration': 'REDACTED', 'SecretAccessKey': 'REDACTED', 'SessionToken': 'REDACTED'}    <!--- # pragma: allowlist secret -->
+action_result.parameter.credentials | string |  `aws credentials`  |   {'AccessKeyId': 'REDACTED', 'Expiration': 'REDACTED', 'SecretAccessKey': 'REDACTED', 'SessionToken': 'REDACTED'}   
 
 ## action: 'unarchive finding'
 Unarchives Amazon GuardDuty findings specified by the detector ID and list of finding IDs
@@ -404,7 +404,7 @@ action_result.summary.total_findings | numeric |  |   0  1
 action_result.message | string |  |   Successfully unarchived the findings 
 summary.total_objects | numeric |  |   1 
 summary.total_objects_successful | numeric |  |   1 
-action_result.parameter.credentials | string |  `aws credentials`  |   {'AccessKeyId': 'REDACTED', 'Expiration': 'REDACTED', 'SecretAccessKey': 'REDACTED', 'SessionToken': 'REDACTED'}    <!--- # pragma: allowlist secret -->
+action_result.parameter.credentials | string |  `aws credentials`  |   {'AccessKeyId': 'REDACTED', 'Expiration': 'REDACTED', 'SecretAccessKey': 'REDACTED', 'SessionToken': 'REDACTED'}   
 
 ## action: 'list filters'
 Returns a paginated list of the current filters
@@ -442,7 +442,7 @@ action_result.summary.total_filters | numeric |  |   1  3
 action_result.message | string |  |   Total filters: 1  Total filters: 3 
 summary.total_objects | numeric |  |   1 
 summary.total_objects_successful | numeric |  |   1 
-action_result.parameter.credentials | string |  `aws credentials`  |   {'AccessKeyId': 'REDACTED', 'Expiration': 'REDACTED', 'SecretAccessKey': 'REDACTED', 'SessionToken': 'REDACTED'}    <!--- # pragma: allowlist secret -->
+action_result.parameter.credentials | string |  `aws credentials`  |   {'AccessKeyId': 'REDACTED', 'Expiration': 'REDACTED', 'SecretAccessKey': 'REDACTED', 'SessionToken': 'REDACTED'}   
 
 ## action: 'list threats'
 Lists the ThreatIntelSets of the GuardDuty service specified by the detector ID
@@ -472,7 +472,7 @@ action_result.summary.total_threats | numeric |  |   2
 action_result.message | string |  |   Total threats: 2 
 summary.total_objects | numeric |  |   1 
 summary.total_objects_successful | numeric |  |   1 
-action_result.parameter.credentials | string |  `aws credentials`  |   {'AccessKeyId': 'REDACTED', 'Expiration': 'REDACTED', 'SecretAccessKey': 'REDACTED', 'SessionToken': 'REDACTED'}    <!--- # pragma: allowlist secret -->
+action_result.parameter.credentials | string |  `aws credentials`  |   {'AccessKeyId': 'REDACTED', 'Expiration': 'REDACTED', 'SecretAccessKey': 'REDACTED', 'SessionToken': 'REDACTED'}   
 
 ## action: 'list ip sets'
 Lists the IPSets of the GuardDuty service specified by the detector ID
@@ -502,7 +502,7 @@ action_result.summary.total_ip_sets | numeric |  |   1
 action_result.message | string |  |   Total ip sets: 1 
 summary.total_objects | numeric |  |   1 
 summary.total_objects_successful | numeric |  |   1 
-action_result.parameter.credentials | string |  `aws credentials`  |   {'AccessKeyId': 'REDACTED', 'Expiration': 'REDACTED', 'SecretAccessKey': 'REDACTED', 'SessionToken': 'REDACTED'}    <!--- # pragma: allowlist secret -->
+action_result.parameter.credentials | string |  `aws credentials`  |   {'AccessKeyId': 'REDACTED', 'Expiration': 'REDACTED', 'SecretAccessKey': 'REDACTED', 'SessionToken': 'REDACTED'}   
 
 ## action: 'list detectors'
 Lists detectorIds of all the existing Amazon GuardDuty detector resources
@@ -533,4 +533,4 @@ action_result.summary.total_detectors | numeric |  |   0  1
 action_result.message | string |  |   Total detectors: 0  Total detectors: 1 
 summary.total_objects | numeric |  |   1 
 summary.total_objects_successful | numeric |  |   1 
-action_result.parameter.credentials | string |  `aws credentials`  |   {'AccessKeyId': 'REDACTED', 'Expiration': 'REDACTED', 'SecretAccessKey': 'REDACTED', 'SessionToken': 'REDACTED'}    <!--- # pragma: allowlist secret -->
+action_result.parameter.credentials | string |  `aws credentials`  |   {'AccessKeyId': 'REDACTED', 'Expiration': 'REDACTED', 'SecretAccessKey': 'REDACTED', 'SessionToken': 'REDACTED'} 
