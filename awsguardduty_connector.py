@@ -1,6 +1,6 @@
 # File: awsguardduty_connector.py
 #
-# Copyright (c) 2019-2021 Splunk Inc.
+# Copyright (c) 2019-2024 Splunk Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -161,8 +161,11 @@ class AwsGuarddutyConnector(BaseConnector):
                         config=boto_config)
 
         except Exception as e:
-            err_msg = self._get_error_message_from_exception(e)
-            return action_result.set_status(phantom.APP_ERROR, "{0}. {1}".format(AWSGUARDDUTY_CREATE_CLIENT_ERR_MSG, err_msg))
+            error_message = self._get_error_message_from_exception(e)
+            return action_result.set_status(
+                phantom.APP_ERROR,
+                "{0}. {1}".format(AWSGUARDDUTY_CREATE_CLIENT_ERR_MSG, error_message)
+            )
 
         return phantom.APP_SUCCESS
 
@@ -429,9 +432,9 @@ class AwsGuarddutyConnector(BaseConnector):
         try:
             resp_json = boto_func(**kwargs)
         except Exception as e:
-            err_msg = self._get_error_message_from_exception(e)
+            error_message = self._get_error_message_from_exception(e)
             return RetVal(action_result.set_status(phantom.APP_ERROR, '{0}. {1}'.format(
-                AWSGUARDDUTY_BOTO3_CONN_FAILED_MSG, err_msg)), None)
+                AWSGUARDDUTY_BOTO3_CONN_FAILED_MSG, error_message)), None)
 
         try:
             resp_json = self._sanitize_dates(resp_json)
