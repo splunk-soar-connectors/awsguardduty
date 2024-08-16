@@ -10,11 +10,11 @@
     "product_version_regex": ".*",
     "publisher": "Splunk",
     "license": "Copyright (c) 2019-2024 Splunk Inc.",
-    "app_version": "2.1.10",
+    "app_version": "2.1.11",
     "utctime_updated": "2022-01-07T21:11:18.000000Z",
     "package_name": "phantom_awsguardduty",
     "main_module": "awsguardduty_connector.py",
-    "min_phantom_version": "6.1.1",
+    "min_phantom_version": "6.2.1",
     "fips_compliant": true,
     "python_version": "3",
     "latest_tested_versions": [
@@ -23,10 +23,6 @@
     "app_wizard_version": "1.0.0",
     "pip_dependencies": {
         "wheel": [
-            {
-                "module": "beautifulsoup4",
-                "input_file": "wheels/py3/beautifulsoup4-4.9.1-py3-none-any.whl"
-            },
             {
                 "module": "boto3",
                 "input_file": "wheels/shared/boto3-1.17.30-py2.py3-none-any.whl"
@@ -40,24 +36,8 @@
                 "input_file": "wheels/shared/jmespath-0.10.0-py2.py3-none-any.whl"
             },
             {
-                "module": "python_dateutil",
-                "input_file": "wheels/shared/python_dateutil-2.8.1-py2.py3-none-any.whl"
-            },
-            {
                 "module": "s3transfer",
                 "input_file": "wheels/shared/s3transfer-0.3.3-py2.py3-none-any.whl"
-            },
-            {
-                "module": "six",
-                "input_file": "wheels/shared/six-1.15.0-py2.py3-none-any.whl"
-            },
-            {
-                "module": "soupsieve",
-                "input_file": "wheels/py3/soupsieve-2.3.2.post1-py3-none-any.whl"
-            },
-            {
-                "module": "urllib3",
-                "input_file": "wheels/shared/urllib3-1.26.18-py2.py3-none-any.whl"
             }
         ]
     },
