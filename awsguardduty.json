@@ -22,24 +22,7 @@
     ],
     "app_wizard_version": "1.0.0",
     "pip_dependencies": {
-        "wheel": [
-            {
-                "module": "boto3",
-                "input_file": "wheels/shared/boto3-1.17.30-py2.py3-none-any.whl"
-            },
-            {
-                "module": "botocore",
-                "input_file": "wheels/shared/botocore-1.20.30-py2.py3-none-any.whl"
-            },
-            {
-                "module": "jmespath",
-                "input_file": "wheels/shared/jmespath-0.10.0-py2.py3-none-any.whl"
-            },
-            {
-                "module": "s3transfer",
-                "input_file": "wheels/shared/s3transfer-0.3.3-py2.py3-none-any.whl"
-            }
-        ]
+        "wheel": []
     },
     "configuration": {
         "access_key": {
