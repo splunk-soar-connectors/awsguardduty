@@ -14,7 +14,7 @@
     "utctime_updated": "2022-01-07T21:11:18.000000Z",
     "package_name": "phantom_awsguardduty",
     "main_module": "awsguardduty_connector.py",
-    "min_phantom_version": "6.2.2",
+    "min_phantom_version": "6.2.1",
     "fips_compliant": true,
     "python_version": "3",
     "latest_tested_versions": [
