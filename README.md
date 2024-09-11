@@ -6,7 +6,7 @@ Connector Version: 2.1.11
 Product Vendor: AWS  
 Product Name: GuardDuty  
 Product Version Supported (regex): ".\*"  
-Minimum Product Version: 6.2.2  
+Minimum Product Version: 6.2.1  
 
 This app integrates with AWS GuardDuty to investigate findings
 
