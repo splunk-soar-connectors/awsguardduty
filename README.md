@@ -2,11 +2,11 @@
 # AWS GuardDuty
 
 Publisher: Splunk  
-Connector Version: 2.1.10  
+Connector Version: 2.1.11  
 Product Vendor: AWS  
 Product Name: GuardDuty  
 Product Version Supported (regex): ".\*"  
-Minimum Product Version: 6.1.1  
+Minimum Product Version: 6.2.1  
 
 This app integrates with AWS GuardDuty to investigate findings
 
@@ -191,7 +191,7 @@ PARAMETER | REQUIRED | DESCRIPTION | TYPE | CONTAINS
 #### Action Output
 DATA PATH | TYPE | CONTAINS | EXAMPLE VALUES
 --------- | ---- | -------- | --------------
-action_result.parameter.credentials | string |  `aws credentials`  |   {'AccessKeyId': 'REDACTED', 'Expiration': 'REDACTED', 'SecretAccessKey': 'REDACTED', 'SessionToken': 'REDACTED'}
+action_result.parameter.credentials | string |  `aws credentials`  |   {'AccessKeyId': 'REDACTED', 'Expiration': 'REDACTED', 'SecretAccessKey': 'REDACTED', 'SessionToken': 'REDACTED'}   
 
 ## action: 'update finding'
 Updates specified Amazon GuardDuty findings as useful or not useful
