@@ -283,7 +283,10 @@ class AwsGuarddutyConnector(BaseConnector):
         if (
             self._state.get("first_run", True)
             or self.is_poll_now()
-            or ((filter_name or self._state.get("filter_name")) and filter_name != self._state.get("filter_name"))
+            or (
+                (filter_name or self._state.get("filter_name"))
+                and filter_name != self._state.get("filter_name")
+            )
         ):
             criteria_dict = {"updatedAt": {"Gt": initial_time}}
             if not self.is_poll_now() and self._state.get("first_run", True):
