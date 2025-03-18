@@ -1,6 +1,6 @@
 # File: awsguardduty_connector.py
 #
-# Copyright (c) 2019-2024 Splunk Inc.
+# Copyright (c) 2019-2025 Splunk Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -38,11 +38,9 @@ class RetVal(tuple):
 
 
 class AwsGuarddutyConnector(BaseConnector):
-
     def __init__(self):
-
         # Call the BaseConnectors init first
-        super(AwsGuarddutyConnector, self).__init__()
+        super().__init__()
 
         self._state = None
         self._region = None
@@ -94,7 +92,7 @@ class AwsGuarddutyConnector(BaseConnector):
         except:
             error_msg = AWSGUARDDUTY_ERR_MSG_UNAVAILABLE
 
-        return "Error Code: {0}. Error Message: {1}".format(error_code, error_msg)
+        return f"Error Code: {error_code}. Error Message: {error_msg}"
 
     def _validate_integer(self, action_result, parameter, key, allow_zero=False):
         """This method is to check if the provided input parameter value
@@ -124,7 +122,6 @@ class AwsGuarddutyConnector(BaseConnector):
         return phantom.APP_SUCCESS, parameter
 
     def _create_client(self, action_result, param=None):
-
         boto_config = None
         if self._proxy:
             boto_config = Config(proxies=self._proxy)
@@ -140,7 +137,7 @@ class AwsGuarddutyConnector(BaseConnector):
 
                 self.save_progress("Using temporary assume role credentials for action")
             except Exception as e:
-                return action_result.set_status(phantom.APP_ERROR, "Failed to get temporary credentials: {}".format(e))
+                return action_result.set_status(phantom.APP_ERROR, f"Failed to get temporary credentials: {e}")
 
         try:
             if self._access_key and self._secret_key:
@@ -159,12 +156,11 @@ class AwsGuarddutyConnector(BaseConnector):
 
         except Exception as e:
             error_message = self._get_error_message_from_exception(e)
-            return action_result.set_status(phantom.APP_ERROR, "{0}. {1}".format(AWSGUARDDUTY_CREATE_CLIENT_ERR_MSG, error_message))
+            return action_result.set_status(phantom.APP_ERROR, f"{AWSGUARDDUTY_CREATE_CLIENT_ERR_MSG}. {error_message}")
 
         return phantom.APP_SUCCESS
 
     def _sanitize_dates(self, cur_obj):
-
         try:
             json.dumps(cur_obj)
             return cur_obj
@@ -257,15 +253,15 @@ class AwsGuarddutyConnector(BaseConnector):
 
         return phantom.APP_SUCCESS, AWSGUARDDUTY_CREATE_ARTIFACT_MSG
 
-    def _handle_on_poll(self, param):  # noqa: C901
+    def _handle_on_poll(self, param):
         """This function is used to handle on_poll.
 
         :param param: Dictionary of input parameters
         :return: status success/failure
         """
 
-        self.debug_print("In action handler for: {0}".format(self.get_action_identifier()))
-        self.save_progress("In action handler for: {0}".format(self.get_action_identifier()))
+        self.debug_print(f"In action handler for: {self.get_action_identifier()}")
+        self.save_progress(f"In action handler for: {self.get_action_identifier()}")
         action_result = self.add_action_result(ActionResult(dict(param)))
 
         if phantom.is_fail(self._create_client(action_result, param)):
@@ -417,18 +413,13 @@ class AwsGuarddutyConnector(BaseConnector):
             artifacts_creation_status, artifacts_creation_msg = self._create_artifacts(finding=finding, container_id=container_id)
 
             if phantom.is_fail(artifacts_creation_status):
-                self.debug_print(
-                    "{}. {error_msg}".format(
-                        AWSGUARDDUTY_CREATE_ARTIFACT_ERR_MSG.format(container_id=container_id), error_msg=artifacts_creation_msg
-                    )
-                )
+                self.debug_print(f"{AWSGUARDDUTY_CREATE_ARTIFACT_ERR_MSG.format(container_id=container_id)}. {artifacts_creation_msg}")
 
-        self.save_progress("Total findings available on the UI of AWS GuardDuty: {}".format(len(all_findings)))
+        self.save_progress(f"Total findings available on the UI of AWS GuardDuty: {len(all_findings)}")
 
         return action_result.set_status(phantom.APP_SUCCESS)
 
     def _make_boto_call(self, action_result, method, **kwargs):
-
         try:
             boto_func = getattr(self._client, method)
         except AttributeError:
@@ -438,9 +429,7 @@ class AwsGuarddutyConnector(BaseConnector):
             resp_json = boto_func(**kwargs)
         except Exception as e:
             error_message = self._get_error_message_from_exception(e)
-            return RetVal(
-                action_result.set_status(phantom.APP_ERROR, "{0}. {1}".format(AWSGUARDDUTY_BOTO3_CONN_FAILED_MSG, error_message)), None
-            )
+            return RetVal(action_result.set_status(phantom.APP_ERROR, f"{AWSGUARDDUTY_BOTO3_CONN_FAILED_MSG}. {error_message}"), None)
 
         try:
             resp_json = self._sanitize_dates(resp_json)
@@ -480,7 +469,7 @@ class AwsGuarddutyConnector(BaseConnector):
         ret_val, valid_findings_ids = self._validate_findings_id(finding_ids, None, action_result, detector_id)
         if not ret_val:
             return action_result.get_status()
-        self.debug_print("Valid finding IDs are: \n{}".format(valid_findings_ids))
+        self.debug_print(f"Valid finding IDs are: \n{valid_findings_ids}")
 
         comments = param.get("comment")
         while valid_findings_ids:
@@ -515,7 +504,6 @@ class AwsGuarddutyConnector(BaseConnector):
         return action_result.set_status(phantom.APP_SUCCESS, AWSGUARDDUTY_UPDATE_FINDING_SUCC_MSG)
 
     def _validate_findings_id(self, findings_ids, record_state, action_result, detector_id):
-
         # Validation of the correctness of the findings_ids
         valid_finding_ids = []
 
@@ -589,7 +577,7 @@ class AwsGuarddutyConnector(BaseConnector):
             return action_result.set_status(phantom.APP_ERROR, AWSGUARDDUTY_INVALID_FINDING_ID_ERR_MSG)
 
         ret_val, valid_findings_ids = self._validate_findings_id(finding_ids, "ARCHIVED", action_result, detector_id)
-        self.debug_print("Valid finding IDs are: \n{}".format(valid_findings_ids))
+        self.debug_print(f"Valid finding IDs are: \n{valid_findings_ids}")
         if not ret_val:
             return action_result.get_status()
 
@@ -635,7 +623,7 @@ class AwsGuarddutyConnector(BaseConnector):
         ret_val, valid_findings_ids = self._validate_findings_id(finding_ids, "UNARCHIVED", action_result, detector_id)
         if not ret_val:
             return action_result.get_status()
-        self.debug_print("Valid finding IDs are: \n{}".format(valid_findings_ids))
+        self.debug_print(f"Valid finding IDs are: \n{valid_findings_ids}")
 
         while valid_findings_ids:
             ret_val, response = self._make_boto_call(
@@ -828,7 +816,7 @@ class AwsGuarddutyConnector(BaseConnector):
         :param limit: Maximum results to be fetched
         """
 
-        self.save_progress("In action handler for: {0}".format(self.get_action_identifier()))
+        self.save_progress(f"In action handler for: {self.get_action_identifier()}")
 
         action_result = self.add_action_result(ActionResult(dict(param)))
 
@@ -876,7 +864,7 @@ class AwsGuarddutyConnector(BaseConnector):
         :param limit: Maximum results to be fetched
         """
 
-        self.save_progress("In action handler for: {0}".format(self.get_action_identifier()))
+        self.save_progress(f"In action handler for: {self.get_action_identifier()}")
 
         action_result = self.add_action_result(ActionResult(dict(param)))
 
@@ -952,7 +940,6 @@ class AwsGuarddutyConnector(BaseConnector):
         return action_result.set_status(phantom.APP_SUCCESS)
 
     def handle_action(self, param):
-
         self.debug_print("action_id", self.get_action_identifier())
 
         # Dictionary mapping each action with its corresponding actions
@@ -979,13 +966,11 @@ class AwsGuarddutyConnector(BaseConnector):
         return action_execution_status
 
     def _handle_get_ec2_role(self):
-
         session = Session(region_name=self._region)
         credentials = session.get_credentials()
         return credentials
 
     def initialize(self):
-
         self._state = self.load_state()
 
         # Fetching the Python major version
@@ -1032,14 +1017,12 @@ class AwsGuarddutyConnector(BaseConnector):
         return phantom.APP_SUCCESS
 
     def finalize(self):
-
         # Save the state, this data is saved across actions and app upgrades
         self.save_state(self._state)
         return phantom.APP_SUCCESS
 
 
 if __name__ == "__main__":
-
     import argparse
 
     import pudb
@@ -1059,7 +1042,6 @@ if __name__ == "__main__":
     password = args.password
 
     if username is not None and password is None:
-
         # User specified a username but not a password, so ask
         import getpass
 
@@ -1085,7 +1067,7 @@ if __name__ == "__main__":
             r2 = requests.post(login_url, verify=False, data=data, headers=headers)
             session_id = r2.cookies["sessionid"]
         except Exception as e:
-            print("Unable to get session id from the platform. Error: {}".format(str(e)))
+            print(f"Unable to get session id from the platform. Error: {e!s}")
             exit(1)
 
     with open(args.input_test_json) as f:

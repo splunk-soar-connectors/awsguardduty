@@ -1,6 +1,6 @@
 # File: awsguardduty_consts.py
 #
-# Copyright (c) 2019-2024 Splunk Inc.
+# Copyright (c) 2019-2025 Splunk Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -67,7 +67,7 @@ AWSGUARDDUTY_BAD_ASSET_CONFIG_ERR_MSG = "Please provide access keys or select as
 AWSGUARDDUTY_ERR_MSG_UNAVAILABLE = "Error message unavailable. Please check the asset configuration and|or action parameters."
 AWSGUARDDUTY_ERR_CODE_UNAVAILABLE = "Error code unavailable"
 AWSGUARDDUTY_UNICODE_DAMMIT_TYPE_ERR_MSG = (
-    "Error occurred while connecting to the AWS GuardDuty server. Please check the " "asset configuration and|or the action parameters."
+    "Error occurred while connecting to the AWS GuardDuty server. Please check the asset configuration and|or the action parameters."
 )
 
 # Constants relating to 'validate_integer'
