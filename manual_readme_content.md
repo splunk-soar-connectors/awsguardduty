@@ -1,8 +1,3 @@
-[comment]: # " File: README.md"
-[comment]: # "  Copyright (c) 2019-2021 Splunk Inc."
-[comment]: # ""
-[comment]: # "  Licensed under Apache 2.0 (https://www.apache.org/licenses/LICENSE-2.0.txt)"
-[comment]: # ""
 ## SDK and SDK Licensing details for the app
 
 ### boto3
@@ -71,54 +66,40 @@ documentation](https://docs.aws.amazon.com/iam/index.html) .
 
 ## On Poll Guidelines
 
--   **Configuration Parameters**
+- **Configuration Parameters**
 
-      
+  - The asset configuration parameter `         poll_now_days        ` is optional, with the
+    default value of 30 days. This configuration parameter is used for the manual polling using
+    Poll Now.
+  - The asset configuration parameter `         filter_name        ` is optional and if not
+    specified, it will fetch all the findings. This configuration parameter is used in all the
+    On Poll modes (manual polling, scheduled polling, and interval polling).
 
-    -   The asset configuration parameter `         poll_now_days        ` is optional, with the
-        default value of 30 days. This configuration parameter is used for the manual polling using
-        Poll Now.
-    -   The asset configuration parameter `         filter_name        ` is optional and if not
-        specified, it will fetch all the findings. This configuration parameter is used in all the
-        On Poll modes (manual polling, scheduled polling, and interval polling).
+- **Manual Polling**
 
-      
+  - Manual polling will fetch all the findings (in latest first order) based on the given
+    `         filter_name        ` (if `         filter_name        ` is not provided, all
+    findings will be fetched) for the last `         poll_now_days        ` from the current
+    time (if `         poll_now_days        ` is not specified, default 30 days will be
+    considered).
 
--   **Manual Polling**
+- **Scheduled | Interval Polling**
 
-      
+  - The scheduled | interval polling fetches the findings (in oldest first order to ensure zero
+    data loss) based on the same logic of the manual polling for the first run. The 'updatedAt'
+    time of the last fetched finding gets stored in this first run.
+  - For the consecutive runs, the findings get fetched after the stored 'updatedAt' time in the
+    previous run.
+  - If the `         filter_name        ` gets changed at an intermediate stage of the
+    scheduled | interval polling, the next run of polling will auto-detect the change and it will
+    poll the findings and reset the 'updatedAt' time based on the new
+    `         filter_name        ` .
 
-    -   Manual polling will fetch all the findings (in latest first order) based on the given
-        `         filter_name        ` (if `         filter_name        ` is not provided, all
-        findings will be fetched) for the last `         poll_now_days        ` from the current
-        time (if `         poll_now_days        ` is not specified, default 30 days will be
-        considered).
+- **Recommendations for Filter Creation on AWS GuardDuty UI**
 
-      
-
--   **Scheduled | Interval Polling**
-
-      
-
-    -   The scheduled | interval polling fetches the findings (in oldest first order to ensure zero
-        data loss) based on the same logic of the manual polling for the first run. The 'updatedAt'
-        time of the last fetched finding gets stored in this first run.
-    -   For the consecutive runs, the findings get fetched after the stored 'updatedAt' time in the
-        previous run.
-    -   If the `         filter_name        ` gets changed at an intermediate stage of the
-        scheduled | interval polling, the next run of polling will auto-detect the change and it will
-        poll the findings and reset the 'updatedAt' time based on the new
-        `         filter_name        ` .
-
-      
-
--   **Recommendations for Filter Creation on AWS GuardDuty UI**
-
-      
-
-    -   For the On Poll action, it is not recommended to include 'updatedAt' (time-based) filter
-        criteria in the filter created on AWS GuardDuty UI to avoid conflicts with the timing logic
-        of the On Poll action.
-    -   If 'updatedAt' (time-based) filter criteria is included in the filter created on AWS
-        GuardDuty UI, it will be explicitly replaced with the timing logic of the On Poll action
-        **(keeping other filter criteria the same)** .
+  - For the On Poll action, it is not recommended to include 'updatedAt' (time-based) filter
+    criteria in the filter created on AWS GuardDuty UI to avoid conflicts with the timing logic
+    of the On Poll action.
+  - If 'updatedAt' (time-based) filter criteria is included in the filter created on AWS
+    GuardDuty UI, it will be explicitly replaced with the timing logic of the On Poll action
+    **(keeping other filter criteria the same)** .

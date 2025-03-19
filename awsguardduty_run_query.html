@@ -1,16 +1,17 @@
 {% extends 'widgets/widget_template.html' %}
 {% load custom_template %}
-
-{% block custom_title_prop %}{% if title_logo %}style="background-size: auto 60%; background-position: 50%; background-repeat: no-repeat; background-image: url('/app_resource/{{ title_logo }}');"{% endif %}{% endblock %}
+{% block custom_title_prop %}
+  {% if title_logo %}
+    style="background-size: auto 60%; background-position: 50%; background-repeat: no-repeat; background-image: url('/app_resource/{{ title_logo }}');"
+  {% endif %}
+{% endblock %}
 {% block title1 %}{{ title1 }}{% endblock %}
 {% block title2 %}{{ title2 }}{% endblock %}
-{% block custom_tools %}
-{% endblock %}
-
-{% block widget_content %} <!-- Main Start Block -->
-
-<!-- File: awsguardduty_run_query.html
-     Copyright (c) 2019-2024 Splunk Inc.
+{% block custom_tools %}{% endblock %}
+{% block widget_content %}
+  <!-- Main Start Block -->
+  <!-- File: awsguardduty_run_query.html
+     Copyright (c) 2019-2025 Splunk Inc.
      Licensed under the Apache License, Version 2.0 (the "License");
      you may not use this file except in compliance with the License.
      You may obtain a copy of the License at
@@ -22,8 +23,7 @@
      either express or implied. See the License for the specific language governing permissions
      and limitations under the License.
 -->
-<style>
-
+  <style>
     .awsguardduty a:hover {
         text-decoration:underline;
     }
@@ -69,187 +69,177 @@
     }
 
 
-</style>
-
-<div class="awsguardduty" style="overflow: auto; width: 100% height: 100%; padding-left:10px; padding-right:10px">
+  </style>
+  <div class="awsguardduty"
+       style="overflow: auto;
+              width: 100% height: 100%;
+              padding-left:10px;
+              padding-right:10px">
     <!-- Main Div -->
-
-    {% for result in results %} <!-- loop for each result -->
-    {% if not result.data %}
-    <h4 class="wf-h4-style">No data found</h4>
-    {% else %}
+    {% for result in results %}
+      <!-- loop for each result -->
+      {% if not result.data %}
+        <h4 class="wf-h4-style">No data found</h4>
+      {% else %}
         <div class="info">
-        <h4 class="wf-h4-style">Info</h4>
-        <table class="wf-table-vertical">
+          <h4 class="wf-h4-style">Info</h4>
+          <table class="wf-table-vertical">
             <tr>
-                <td>Detector ID</td>
-                <td>
-                    <a href="javascript:;" onclick="context_menu(this, [{'contains': ['aws guardduty detector id'],
-                    'value':'{{ result.param.detector_id }}' }], 0,
-                    {{ container.id }}, null, false);">
-                        {{ result.param.detector_id }}
-                        &nbsp;
-                        <span class="fa fa-caret-down" style="font-size: smaller;"></span>
-                    </a>
-                </td>
+              <td>Detector ID</td>
+              <td>
+                <a href="javascript:;"
+                   onclick="context_menu(this, [{'contains': ['aws guardduty detector id'], 'value':'{{ result.param.detector_id }}' }], 0, {{ container.id }}, null, false);">
+                  {{ result.param.detector_id }}
+                  &nbsp;
+                  <span class="fa fa-caret-down" style="font-size: smaller;"></span>
+                </a>
+              </td>
             </tr>
             {% if result.param.instance_id %}
-            <tr>
+              <tr>
                 <td>Instance ID</td>
                 <td>
-                    <a href="javascript:;" onclick="context_menu(this, [{'contains': ['aws guardduty instance id'],
-                    'value':'{{ result.param.instance_id }}' }], 0,
-                    {{ container.id }}, null, false);">
-                        {{ result.param.instance_id }}
-                        &nbsp;
-                        <span class="fa fa-caret-down" style="font-size: smaller;"></span>
-                    </a>
+                  <a href="javascript:;"
+                     onclick="context_menu(this, [{'contains': ['aws guardduty instance id'], 'value':'{{ result.param.instance_id }}' }], 0, {{ container.id }}, null, false);">
+                    {{ result.param.instance_id }}
+                    &nbsp;
+                    <span class="fa fa-caret-down" style="font-size: smaller;"></span>
+                  </a>
                 </td>
-            </tr>
+              </tr>
             {% endif %}
             {% if result.param.severity %}
-            <tr>
+              <tr>
                 <td>Severity</td>
                 <td>
-                    <a href="javascript:;" onclick="context_menu(this, [{'contains': ['aws guardduty severity'],
-                    'value':'{{ result.param.severity }}' }], 0,
-                    {{ container.id }}, null, false);">
-                        {{ result.param.severity }}
-                        &nbsp;
-                        <span class="fa fa-caret-down" style="font-size: smaller;"></span>
-                    </a>
+                  <a href="javascript:;"
+                     onclick="context_menu(this, [{'contains': ['aws guardduty severity'], 'value':'{{ result.param.severity }}' }], 0, {{ container.id }}, null, false);">
+                    {{ result.param.severity }}
+                    &nbsp;
+                    <span class="fa fa-caret-down" style="font-size: smaller;"></span>
+                  </a>
                 </td>
-            </tr>
+              </tr>
             {% endif %}
             {% if result.param.public_ip %}
-            <tr>
+              <tr>
                 <td>Public IP</td>
                 <td>
-                    <a href="javascript:;" onclick="context_menu(this, [{'contains': ['ip'],
-                    'value':'{{ result.param.public_ip }}' }], 0,
-                    {{ container.id }}, null, false);">
-                        {{ result.param.public_ip }}
-                        &nbsp;
-                        <span class="fa fa-caret-down" style="font-size: smaller;"></span>
-                    </a>
+                  <a href="javascript:;"
+                     onclick="context_menu(this, [{'contains': ['ip'], 'value':'{{ result.param.public_ip }}' }], 0, {{ container.id }}, null, false);">
+                    {{ result.param.public_ip }}
+                    &nbsp;
+                    <span class="fa fa-caret-down" style="font-size: smaller;"></span>
+                  </a>
                 </td>
-            </tr>
+              </tr>
             {% endif %}
             {% if result.param.private_ip %}
-            <tr>
+              <tr>
                 <td>Private IP</td>
                 <td>
-                    <a href="javascript:;" onclick="context_menu(this, [{'contains': ['ip'],
-                    'value':'{{ result.param.private_ip }}' }], 0,
-                    {{ container.id }}, null, false);">
-                        {{ result.param.private_ip }}
-                        &nbsp;
-                        <span class="fa fa-caret-down" style="font-size: smaller;"></span>
-                    </a>
+                  <a href="javascript:;"
+                     onclick="context_menu(this, [{'contains': ['ip'], 'value':'{{ result.param.private_ip }}' }], 0, {{ container.id }}, null, false);">
+                    {{ result.param.private_ip }}
+                    &nbsp;
+                    <span class="fa fa-caret-down" style="font-size: smaller;"></span>
+                  </a>
                 </td>
-            </tr>
+              </tr>
             {% endif %}
             {% if result.param.limit %}
-            <tr>
+              <tr>
                 <td>Limit</td>
-                <td>
-                        {{ result.param.limit }}
-                </td>
-            </tr>
+                <td>{{ result.param.limit }}</td>
+              </tr>
             {% endif %}
-        </table>
+          </table>
         </div>
-
         <div class="results">
-        <h4 class="wf-h4-style">Result</h4>
-            <table class="phantom-table dataTable">
-                <thead>
-                    <th class="widget-th">Finding ID</th>
-                    <th class="widget-th">Instance ID</th>
-                    <th class="widget-th">Severity</th>
-                    <th class="widget-th">Public IP</th>
-                    <th class="widget-th">Private IP</th>
-                </thead>
-                <tbody>
-                {% for item in result.data %}
-				<tr>
-                <td class="widget-td">
-                    <a href="javascript:;" onclick="context_menu(this, [{'contains': ['aws guardduty finding id'],
-                    'value':'{{ item.Id }}' }], 0,
-                    {{ container.id }}, null, false);">
-                        {{ item.Id }}
-                        &nbsp;
-                        <span class="fa fa-caret-down" style="font-size: smaller;"></span>
+          <h4 class="wf-h4-style">Result</h4>
+          <table class="phantom-table dataTable">
+            <thead>
+              <th class="widget-th">Finding ID</th>
+              <th class="widget-th">Instance ID</th>
+              <th class="widget-th">Severity</th>
+              <th class="widget-th">Public IP</th>
+              <th class="widget-th">Private IP</th>
+            </thead>
+            <tbody>
+              {% for item in result.data %}
+                <tr>
+                  <td class="widget-td">
+                    <a href="javascript:;"
+                       onclick="context_menu(this, [{'contains': ['aws guardduty finding id'], 'value':'{{ item.Id }}' }], 0, {{ container.id }}, null, false);">
+                      {{ item.Id }}
+                      &nbsp;
+                      <span class="fa fa-caret-down" style="font-size: smaller;"></span>
                     </a>
-                </td>
-				<td class="widget-td">
+                  </td>
+                  <td class="widget-td">
                     {% if item.Resource.InstanceDetails.InstanceId %}
-                    <a href="javascript:;" onclick="context_menu(this, [{'contains': ['aws guardduty instance id'],
-                    'value':'{{ item.Resource.InstanceDetails.InstanceId }}' }], 0,
-                    {{ container.id }}, null, false);">
+                      <a href="javascript:;"
+                         onclick="context_menu(this, [{'contains': ['aws guardduty instance id'], 'value':'{{ item.Resource.InstanceDetails.InstanceId }}' }], 0, {{ container.id }}, null, false);">
                         {{ item.Resource.InstanceDetails.InstanceId }}
                         &nbsp;
                         <span class="fa fa-caret-down" style="font-size: smaller;"></span>
-                    </a>
+                      </a>
                     {% else %}
-                    None
+                      None
                     {% endif %}
-                </td>
-                <td class="widget-td">
+                  </td>
+                  <td class="widget-td">
                     {% if item.Severity %}
-                    <a href="javascript:;" onclick="context_menu(this, [{'contains': ['aws guardduty severity'],
-                    'value':'{{ item.Severity }}' }], 0,
-                    {{ container.id }}, null, false);">
+                      <a href="javascript:;"
+                         onclick="context_menu(this, [{'contains': ['aws guardduty severity'], 'value':'{{ item.Severity }}' }], 0, {{ container.id }}, null, false);">
                         {{ item.Severity }}
                         &nbsp;
                         <span class="fa fa-caret-down" style="font-size: smaller;"></span>
-                    </a>
+                      </a>
                     {% else %}
-                    None
+                      None
                     {% endif %}
-                </td>
-                {% if item.Resource.InstanceDetails.NetworkInterfaces %}
-                {% for info in item.Resource.InstanceDetails.NetworkInterfaces %}
-                    <td class="widget-td">
+                  </td>
+                  {% if item.Resource.InstanceDetails.NetworkInterfaces %}
+                    {% for info in item.Resource.InstanceDetails.NetworkInterfaces %}
+                      <td class="widget-td">
                         {% if info.PublicIp %}
-                        <a href="javascript:;" onclick="context_menu(this, [{'contains': ['ip'],
-                        'value':'{{ info.PublicIp }}' }], 0,
-                        {{ container.id }}, null, false);">
+                          <a href="javascript:;"
+                             onclick="context_menu(this, [{'contains': ['ip'], 'value':'{{ info.PublicIp }}' }], 0, {{ container.id }}, null, false);">
                             {{ info.PublicIp }}
                             &nbsp;
                             <span class="fa fa-caret-down" style="font-size: smaller;"></span>
-                        </a>
+                          </a>
                         {% else %}
-                        None
+                          None
                         {% endif %}
-                    </td>
-                    <td class="widget-td">
+                      </td>
+                      <td class="widget-td">
                         {% if info.PrivateIpAddress %}
-                        <a href="javascript:;" onclick="context_menu(this, [{'contains': ['ip'],
-                        'value':'{{ info.PrivateIpAddress }}' }], 0,
-                        {{ container.id }}, null, false);">
+                          <a href="javascript:;"
+                             onclick="context_menu(this, [{'contains': ['ip'], 'value':'{{ info.PrivateIpAddress }}' }], 0, {{ container.id }}, null, false);">
                             {{ info.PrivateIpAddress }}
                             &nbsp;
                             <span class="fa fa-caret-down" style="font-size: smaller;"></span>
-                        </a>
+                          </a>
                         {% else %}
-                        None
+                          None
                         {% endif %}
-                    </td>
-                {% endfor %}
-                {% else %}
-                <td class="widget-td">None</td>
-                <td class="widget-td">None</td>
-                {% endif %}
+                      </td>
+                    {% endfor %}
+                  {% else %}
+                    <td class="widget-td">None</td>
+                    <td class="widget-td">None</td>
+                  {% endif %}
                 </tr>
-                {% endfor %}
-                </tbody>
-            </table>
+              {% endfor %}
+            </tbody>
+          </table>
         </div>
-	{% endif %}
+      {% endif %}
     {% endfor %}
-</div>
-<script>
+  </div>
+  <script>
 $.extend(true, $.fn.dataTable.defaults, {
     "searching": true,
     "bLengthChange": false,
@@ -268,6 +258,5 @@ $.extend(true, $.fn.dataTable.defaults, {
   });
   $('.dataTable').DataTable();
 
-</script>
-
+  </script>
 {% endblock %}
