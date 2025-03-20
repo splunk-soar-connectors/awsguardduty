@@ -4,10 +4,11 @@ on:
   push:
     branches:
       - main  # Runs only on push (merge) to main
+      - mnordby/test
 
 jobs:
   call-publish:
-    uses: splunk-soar-connectors/.github/.github/workflows/publish.yml@main
+    uses: splunk-soar-connectors/.github/.github/workflows/publish.yml@mnordby/tag-format
     secrets:
       release_queue_url: ${{ secrets.RELEASE_QUEUE_URL }}
       splunkbase_user: ${{ secrets.SPLUNKBASE_USER }}

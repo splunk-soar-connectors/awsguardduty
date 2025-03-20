@@ -3,8 +3,7 @@ name: Call Push Workflow
 on:
   pull_request:
     types:
-      - opened       # When a new PR is opened
-      - synchronize  # When a new commit is pushed to the PR branch
+      - closed
 
 jobs:
   call-push:
