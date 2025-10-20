@@ -1,10 +1,10 @@
 # AWS GuardDuty
 
-Publisher: Splunk \
-Connector Version: 2.1.11 \
-Product Vendor: AWS \
-Product Name: GuardDuty \
-Minimum Product Version: 6.2.1
+Publisher: Splunk <br>
+Connector Version: 2.1.11 <br>
+Product Vendor: AWS <br>
+Product Name: GuardDuty <br>
+Minimum Product Version: 6.3.0
 
 This app integrates with AWS GuardDuty to investigate findings
 
@@ -129,22 +129,22 @@ VARIABLE | REQUIRED | TYPE | DESCRIPTION
 
 ### Supported Actions
 
-[test connectivity](#action-test-connectivity) - Validate the asset configuration for connectivity using supplied configuration \
-[on poll](#action-on-poll) - Callback action for the on_poll ingest functionality \
-[update finding](#action-update-finding) - Updates specified Amazon GuardDuty findings as useful or not useful \
-[run query](#action-run-query) - Fetch the findings as per the filters applied \
-[archive finding](#action-archive-finding) - Archives Amazon GuardDuty findings specified by the detector ID and list of finding IDs \
-[unarchive finding](#action-unarchive-finding) - Unarchives Amazon GuardDuty findings specified by the detector ID and list of finding IDs \
-[list filters](#action-list-filters) - Returns a paginated list of the current filters \
-[list threats](#action-list-threats) - Lists the ThreatIntelSets of the GuardDuty service specified by the detector ID \
-[list ip sets](#action-list-ip-sets) - Lists the IPSets of the GuardDuty service specified by the detector ID \
+[test connectivity](#action-test-connectivity) - Validate the asset configuration for connectivity using supplied configuration <br>
+[on poll](#action-on-poll) - Callback action for the on_poll ingest functionality <br>
+[update finding](#action-update-finding) - Updates specified Amazon GuardDuty findings as useful or not useful <br>
+[run query](#action-run-query) - Fetch the findings as per the filters applied <br>
+[archive finding](#action-archive-finding) - Archives Amazon GuardDuty findings specified by the detector ID and list of finding IDs <br>
+[unarchive finding](#action-unarchive-finding) - Unarchives Amazon GuardDuty findings specified by the detector ID and list of finding IDs <br>
+[list filters](#action-list-filters) - Returns a paginated list of the current filters <br>
+[list threats](#action-list-threats) - Lists the ThreatIntelSets of the GuardDuty service specified by the detector ID <br>
+[list ip sets](#action-list-ip-sets) - Lists the IPSets of the GuardDuty service specified by the detector ID <br>
 [list detectors](#action-list-detectors) - Lists detectorIds of all the existing Amazon GuardDuty detector resources
 
 ## action: 'test connectivity'
 
 Validate the asset configuration for connectivity using supplied configuration
 
-Type: **test** \
+Type: **test** <br>
 Read only: **True**
 
 #### Action Parameters
@@ -159,7 +159,7 @@ No Output
 
 Callback action for the on_poll ingest functionality
 
-Type: **ingest** \
+Type: **ingest** <br>
 Read only: **True**
 
 #### Action Parameters
@@ -183,7 +183,7 @@ action_result.parameter.credentials | string | `aws credentials` | {'AccessKeyId
 
 Updates specified Amazon GuardDuty findings as useful or not useful
 
-Type: **generic** \
+Type: **generic** <br>
 Read only: **False**
 
 For the parameter 'finding_id', if the user provides comma-separated values and one or more values are invalid, then those values will be simply ignored and only correct values will be used for further processing.
@@ -218,7 +218,7 @@ action_result.parameter.credentials | string | `aws credentials` | {'AccessKeyId
 
 Fetch the findings as per the filters applied
 
-Type: **investigate** \
+Type: **investigate** <br>
 Read only: **True**
 
 #### Action Parameters
@@ -346,7 +346,7 @@ action_result.parameter.credentials | string | `aws credentials` | {'AccessKeyId
 
 Archives Amazon GuardDuty findings specified by the detector ID and list of finding IDs
 
-Type: **contain** \
+Type: **contain** <br>
 Read only: **False**
 
 For the parameter 'finding_id', if the user provides comma-separated values and one or more values are invalid, then those values will be simply ignored and only correct values will be used for further processing.
@@ -377,7 +377,7 @@ action_result.parameter.credentials | string | `aws credentials` | {'AccessKeyId
 
 Unarchives Amazon GuardDuty findings specified by the detector ID and list of finding IDs
 
-Type: **correct** \
+Type: **correct** <br>
 Read only: **False**
 
 For the parameter 'finding_id', if the user provides comma-separated values and one or more values are invalid, then those values will be simply ignored and only correct values will be used for further processing.
@@ -408,7 +408,7 @@ action_result.parameter.credentials | string | `aws credentials` | {'AccessKeyId
 
 Returns a paginated list of the current filters
 
-Type: **investigate** \
+Type: **investigate** <br>
 Read only: **True**
 
 #### Action Parameters
@@ -449,7 +449,7 @@ action_result.parameter.credentials | string | `aws credentials` | {'AccessKeyId
 
 Lists the ThreatIntelSets of the GuardDuty service specified by the detector ID
 
-Type: **investigate** \
+Type: **investigate** <br>
 Read only: **True**
 
 #### Action Parameters
@@ -482,7 +482,7 @@ action_result.parameter.credentials | string | `aws credentials` | {'AccessKeyId
 
 Lists the IPSets of the GuardDuty service specified by the detector ID
 
-Type: **investigate** \
+Type: **investigate** <br>
 Read only: **True**
 
 #### Action Parameters
@@ -515,7 +515,7 @@ action_result.parameter.credentials | string | `aws credentials` | {'AccessKeyId
 
 Lists detectorIds of all the existing Amazon GuardDuty detector resources
 
-Type: **investigate** \
+Type: **investigate** <br>
 Read only: **True**
 
 #### Action Parameters
