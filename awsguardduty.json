@@ -11,7 +11,7 @@
     "publisher": "Splunk",
     "license": "Copyright (c) 2019-2025 Splunk Inc.",
     "app_version": "2.1.11",
-    "utctime_updated": "2022-01-07T21:11:18.000000Z",
+    "utctime_updated": "2026-02-18T23:02:41.572029Z",
     "package_name": "phantom_awsguardduty",
     "main_module": "awsguardduty_connector.py",
     "min_phantom_version": "6.3.0",
