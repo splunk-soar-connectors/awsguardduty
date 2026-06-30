@@ -1,6 +1,6 @@
 # File: awsguardduty_connector.py
 #
-# Copyright (c) 2019-2025 Splunk Inc.
+# Copyright (c) 2019-2026 Splunk Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -1010,9 +1010,6 @@ class AwsGuarddutyConnector(BaseConnector):
 
         self._access_key = config.get("access_key")
         self._secret_key = config.get("secret_key")
-
-        if not (self._access_key and self._secret_key):
-            return self.set_status(phantom.APP_ERROR, AWSGUARDDUTY_BAD_ASSET_CONFIG_ERR_MSG)
 
         return phantom.APP_SUCCESS
 

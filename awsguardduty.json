@@ -9,7 +9,7 @@
     "product_name": "GuardDuty",
     "product_version_regex": ".*",
     "publisher": "Splunk",
-    "license": "Copyright (c) 2019-2025 Splunk Inc.",
+    "license": "Copyright (c) 2019-2026 Splunk Inc.",
     "app_version": "2.1.11",
     "utctime_updated": "2026-02-18T23:02:41.572029Z",
     "package_name": "phantom_awsguardduty",
@@ -76,9 +76,6 @@
             "description": "Use attached role when running Phantom in EC2",
             "data_type": "boolean",
             "default": false,
-            "visibility": [
-                "onprem"
-            ],
             "order": 5
         }
     },
