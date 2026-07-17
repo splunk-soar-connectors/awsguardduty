@@ -339,7 +339,8 @@
                     "value_list": [
                         "Low",
                         "Medium",
-                        "High"
+                        "High",
+                        "Critical"
                     ],
                     "default": "High",
                     "contains": [
@@ -1108,6 +1109,13 @@
                     "column_order": 2,
                     "contains": [
                         "aws guardduty severity"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.SeverityValue",
+                    "data_type": "numeric",
+                    "example_values": [
+                        8.7
                     ]
                 },
                 {

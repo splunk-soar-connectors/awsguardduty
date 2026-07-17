@@ -30,6 +30,13 @@ from phantom.action_result import ActionResult
 from phantom.base_connector import BaseConnector
 
 from awsguardduty_consts import *
+from awsguardduty_security import (
+    record_pagination_token,
+    severity_criterion,
+    severity_label,
+    unresolved_finding_ids,
+    utc_milliseconds,
+)
 
 
 class RetVal(tuple):
@@ -376,8 +383,10 @@ class AwsGuarddutyConnector(BaseConnector):
                 return action_result.get_status()
 
             for finding in findings_data:
-                if finding.get("Severity"):
-                    finding["Severity"] = AWSGUARDDUTY_SEVERITY_REVERSE_MAP.get(finding.get("Severity"))
+                if finding.get("Severity") is not None:
+                    numeric_severity = finding["Severity"]
+                    finding["SeverityValue"] = numeric_severity
+                    finding["Severity"] = severity_label(numeric_severity) or numeric_severity
 
                     # Parse S3 bucket details
                     try:
@@ -747,8 +756,8 @@ class AwsGuarddutyConnector(BaseConnector):
         instance_id = param.get("instance_id")
         severity = param.get("severity")
         if severity:
-            severity = AWSGUARDDUTY_SEVERITY_MAP.get(param.get("severity"))
-            if not severity:
+            severity = severity_criterion(severity)
+            if severity is None:
                 return action_result.set_status(phantom.APP_ERROR, AWSGUARDDUTY_INVALID_SEVERITY_ERR_MSG)
 
         public_ip = param.get("public_ip")
@@ -767,7 +776,7 @@ class AwsGuarddutyConnector(BaseConnector):
             criterion.update({"resource.instanceDetails.instanceId": {"Eq": [instance_id]}})
 
         if severity:
-            criterion.update({"severity": {"Eq": [severity]}})
+            criterion.update({"severity": severity})
 
         if public_ip:
             criterion.update({"resource.instanceDetails.networkInterfaces.publicIp": {"Eq": [public_ip]}})
@@ -798,8 +807,10 @@ class AwsGuarddutyConnector(BaseConnector):
             findings_data = res.get("Findings")
 
             for finding in findings_data:
-                if finding.get("Severity"):
-                    finding["Severity"] = AWSGUARDDUTY_SEVERITY_REVERSE_MAP.get(finding.get("Severity"))
+                if finding.get("Severity") is not None:
+                    numeric_severity = finding["Severity"]
+                    finding["SeverityValue"] = numeric_severity
+                    finding["Severity"] = severity_label(numeric_severity) or numeric_severity
                 action_result.add_data(finding)
 
             del list_findings[: min(50, len(list_findings))]
