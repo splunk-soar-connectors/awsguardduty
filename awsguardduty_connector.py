@@ -540,24 +540,34 @@ class AwsGuarddutyConnector(BaseConnector):
         valid_id_found = False
 
         while findings_ids:
+            requested_batch = findings_ids[: min(50, len(findings_ids))]
             ret_val, res = self._make_boto_call(
-                action_result, "get_findings", DetectorId=detector_id, FindingIds=findings_ids[: min(50, len(findings_ids))]
+                action_result, "get_findings", DetectorId=detector_id, FindingIds=requested_batch
             )
 
             if phantom.is_fail(ret_val):
                 return False, valid_finding_ids
 
-            if not res.get("Findings"):
+            findings = res.get("Findings") or []
+            unresolved_ids = unresolved_finding_ids(requested_batch, findings)
+            if unresolved_ids:
+                action_result.set_status(
+                    phantom.APP_ERROR,
+                    f"The following finding IDs could not be resolved: {', '.join(unresolved_ids)}",
+                )
+                return False, valid_finding_ids
+
+            if not findings:
                 del findings_ids[: min(50, len(findings_ids))]
                 continue
 
             if self.get_action_identifier() == "update_finding":
-                for finding in res.get("Findings"):
+                for finding in findings:
                     if not valid_id_found:
                         valid_id_found = True
                     valid_finding_ids.append(finding["Id"])
             else:
-                for finding in res.get("Findings"):
+                for finding in findings:
                     if not valid_id_found:
                         valid_id_found = True
                     finding_details = finding.get("Service")

@@ -168,7 +168,7 @@
                     "order": 0
                 },
                 "finding_id": {
-                    "description": "The IDs of the findings (Comma separated IDs allowed)",
+                    "description": "The IDs of the findings (comma-separated IDs allowed). All IDs must resolve or the action fails.",
                     "data_type": "string",
                     "required": true,
                     "primary": true,
@@ -1209,7 +1209,7 @@
                     "order": 0
                 },
                 "finding_id": {
-                    "description": "The IDs of the findings (Comma separated IDs allowed)",
+                    "description": "The IDs of the findings (comma-separated IDs allowed). All IDs must resolve or the action fails.",
                     "data_type": "string",
                     "required": true,
                     "primary": true,
@@ -1332,7 +1332,7 @@
                     "order": 0
                 },
                 "finding_id": {
-                    "description": "The IDs of the findings (Comma separated IDs allowed)",
+                    "description": "The IDs of the findings (comma-separated IDs allowed). All IDs must resolve or the action fails.",
                     "data_type": "string",
                     "required": true,
                     "primary": true,
