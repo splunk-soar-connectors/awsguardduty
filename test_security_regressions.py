@@ -15,8 +15,6 @@ import re
 import sys
 from pathlib import Path
 
-import pytest
-
 
 sys.path.insert(0, str(Path(__file__).parent))
 
@@ -37,12 +35,10 @@ def test_context_menu_values_escape_javascript() -> None:
     assert all("|escapejs" in value for value in values)
 
 
-@pytest.mark.parametrize(
-    ("numeric_value", "expected"),
-    [(1.0, "Low"), (3.9, "Low"), (4.0, "Medium"), (8.9, "High"), (9.0, "Critical"), (10.0, "Critical")],
-)
-def test_severity_ranges_cover_documented_values(numeric_value, expected) -> None:
-    assert severity_label(numeric_value) == expected
+def test_severity_ranges_cover_documented_values() -> None:
+    expected_values = [(1.0, "Low"), (3.9, "Low"), (4.0, "Medium"), (8.9, "High"), (9.0, "Critical"), (10.0, "Critical")]
+    for numeric_value, expected in expected_values:
+        assert severity_label(numeric_value) == expected
 
 
 def test_severity_filter_uses_range() -> None:
@@ -57,8 +53,12 @@ def test_utc_checkpoint_is_independent_of_local_timezone() -> None:
 def test_repeated_pagination_token_is_rejected() -> None:
     seen_tokens = set()
     record_pagination_token("token", seen_tokens)
-    with pytest.raises(ValueError, match="did not advance"):
+    try:
         record_pagination_token("token", seen_tokens)
+    except ValueError as exc:
+        assert "did not advance" in str(exc)
+    else:
+        raise AssertionError("Repeated pagination token was accepted")
 
 
 def test_unresolved_finding_ids_are_reported() -> None:
