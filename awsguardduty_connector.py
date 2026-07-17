@@ -407,22 +407,42 @@ class AwsGuarddutyConnector(BaseConnector):
             self.save_progress("No new findings found to poll")
             return action_result.set_status(phantom.APP_SUCCESS)
 
-        # Updates the last_update_time in the state file
-        if not self.is_poll_now():
-            last_finding = all_findings[(min(len(all_findings), container_count)) - 1]
-            last_updated_at_datetime = datetime.strptime(str(last_finding.get("UpdatedAt")), AWSGUARDDUTY_DATETIME_FORMAT)
-            self._state["last_updated_time"] = int(time.mktime(last_updated_at_datetime.timetuple())) * 1000
-
+        last_successful_updated_at = None
+        save_failures = 0
+        ingested_count = 0
         for finding in all_findings[:container_count]:
-            container_id = self._create_container(finding)
+            try:
+                container_id = self._create_container(finding)
+            except Exception as exc:
+                self.debug_print(f"Failed to create container for finding {finding.get('Id')}: {exc}")
+                container_id = None
 
             if not container_id:
-                continue
+                save_failures += 1
+                break
 
             artifacts_creation_status, artifacts_creation_msg = self._create_artifacts(finding=finding, container_id=container_id)
 
             if phantom.is_fail(artifacts_creation_status):
                 self.debug_print(f"{AWSGUARDDUTY_CREATE_ARTIFACT_ERR_MSG.format(container_id=container_id)}. {artifacts_creation_msg}")
+                save_failures += 1
+                break
+
+            last_successful_updated_at = finding.get("UpdatedAt")
+            ingested_count += 1
+
+        if not self.is_poll_now() and last_successful_updated_at:
+            self._state["last_updated_time"] = utc_milliseconds(last_successful_updated_at)
+
+        summary = action_result.update_summary({})
+        summary["save_failures"] = save_failures
+        summary["successfully_ingested"] = ingested_count
+
+        if save_failures:
+            return action_result.set_status(
+                phantom.APP_ERROR,
+                "GuardDuty polling stopped at the first finding that could not be persisted; it will be retried",
+            )
 
         self.save_progress(f"Total findings available on the UI of AWS GuardDuty: {len(all_findings)}")
 
