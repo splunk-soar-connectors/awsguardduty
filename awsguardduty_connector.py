@@ -1,6 +1,6 @@
 # File: awsguardduty_connector.py
 #
-# Copyright (c) 2019-2025 Splunk Inc.
+# Copyright (c) 2019-2026 Splunk Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -541,9 +541,7 @@ class AwsGuarddutyConnector(BaseConnector):
 
         while findings_ids:
             requested_batch = findings_ids[: min(50, len(findings_ids))]
-            ret_val, res = self._make_boto_call(
-                action_result, "get_findings", DetectorId=detector_id, FindingIds=requested_batch
-            )
+            ret_val, res = self._make_boto_call(action_result, "get_findings", DetectorId=detector_id, FindingIds=requested_batch)
 
             if phantom.is_fail(ret_val):
                 return False, valid_finding_ids
