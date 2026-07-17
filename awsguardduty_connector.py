@@ -688,6 +688,8 @@ class AwsGuarddutyConnector(BaseConnector):
 
         list_items = list()
         next_token = None
+        seen_tokens = set()
+        page_count = 0
         dic_map = {
             "list_filters": ["FilterNames"],
             "list_ip_sets": ["IpSetIds"],
@@ -699,6 +701,13 @@ class AwsGuarddutyConnector(BaseConnector):
         set_name = dic_map.get(method_name)[0]
 
         while True:
+            page_count += 1
+            if page_count > AWSGUARDDUTY_MAX_PAGINATION_PAGES:
+                action_result.set_status(
+                    phantom.APP_ERROR,
+                    f"Pagination exceeded the maximum of {AWSGUARDDUTY_MAX_PAGINATION_PAGES} pages",
+                )
+                return None
             if next_token:
                 ret_val, response = self._make_boto_call(
                     action_result, method_name, NextToken=next_token, MaxResults=AWSGUARDDUTY_MAX_PER_PAGE_LIMIT, **kwargs
@@ -718,6 +727,11 @@ class AwsGuarddutyConnector(BaseConnector):
             next_token = response.get("NextToken")
             if not next_token:
                 break
+            try:
+                record_pagination_token(next_token, seen_tokens)
+            except ValueError as exc:
+                action_result.set_status(phantom.APP_ERROR, str(exc))
+                return None
 
         return list_items
 
