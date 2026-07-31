@@ -1,7 +1,7 @@
 # AWS GuardDuty
 
 Publisher: Splunk <br>
-Connector Version: 2.1.11 <br>
+Connector Version: 2.1.12 <br>
 Product Vendor: AWS <br>
 Product Name: GuardDuty <br>
 Minimum Product Version: 6.3.0
