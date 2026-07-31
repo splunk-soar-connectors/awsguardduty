@@ -9,7 +9,7 @@
     "product_name": "GuardDuty",
     "product_version_regex": ".*",
     "publisher": "Splunk",
-    "license": "Copyright (c) 2019-2025 Splunk Inc.",
+    "license": "Copyright (c) 2019-2026 Splunk Inc.",
     "app_version": "2.1.11",
     "utctime_updated": "2026-02-18T23:02:41.572029Z",
     "package_name": "phantom_awsguardduty",
@@ -168,7 +168,7 @@
                     "order": 0
                 },
                 "finding_id": {
-                    "description": "The IDs of the findings (Comma separated IDs allowed)",
+                    "description": "The IDs of the findings (comma-separated IDs allowed). All IDs must resolve or the action fails.",
                     "data_type": "string",
                     "required": true,
                     "primary": true,
@@ -339,7 +339,8 @@
                     "value_list": [
                         "Low",
                         "Medium",
-                        "High"
+                        "High",
+                        "Critical"
                     ],
                     "default": "High",
                     "contains": [
@@ -1111,6 +1112,13 @@
                     ]
                 },
                 {
+                    "data_path": "action_result.data.*.SeverityValue",
+                    "data_type": "numeric",
+                    "example_values": [
+                        8.7
+                    ]
+                },
+                {
                     "data_path": "action_result.data.*.Title",
                     "data_type": "string",
                     "example_values": [
@@ -1201,7 +1209,7 @@
                     "order": 0
                 },
                 "finding_id": {
-                    "description": "The IDs of the findings (Comma separated IDs allowed)",
+                    "description": "The IDs of the findings (comma-separated IDs allowed). All IDs must resolve or the action fails.",
                     "data_type": "string",
                     "required": true,
                     "primary": true,
@@ -1324,7 +1332,7 @@
                     "order": 0
                 },
                 "finding_id": {
-                    "description": "The IDs of the findings (Comma separated IDs allowed)",
+                    "description": "The IDs of the findings (comma-separated IDs allowed). All IDs must resolve or the action fails.",
                     "data_type": "string",
                     "required": true,
                     "primary": true,

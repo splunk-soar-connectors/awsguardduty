@@ -1,6 +1,6 @@
 # File: awsguardduty_consts.py
 #
-# Copyright (c) 2019-2025 Splunk Inc.
+# Copyright (c) 2019-2026 Splunk Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -13,10 +13,9 @@
 # either express or implied. See the License for the specific language governing permissions
 # and limitations under the License.
 AWSGUARDDUTY_MAX_PER_PAGE_LIMIT = 50
+AWSGUARDDUTY_MAX_PAGINATION_PAGES = 1000
 AWSGUARDDUTY_POLL_NOW_DAYS = 30
 AWSGUARDDUTY_DATETIME_FORMAT = "%Y-%m-%dT%H:%M:%S.%fZ"
-AWSGUARDDUTY_SEVERITY_MAP = {"Low": "2", "Medium": "5", "High": "8"}
-AWSGUARDDUTY_SEVERITY_REVERSE_MAP = {2: "Low", 5: "Medium", 8: "High"}
 AWSGUARDDUTY_JSON_REGION = "region"
 AWSGUARDDUTY_REGION_DICT = {
     "US East(N. Virginia) us-east-1": "us-east-1",

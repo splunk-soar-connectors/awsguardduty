@@ -1,6 +1,6 @@
 # File: awsguardduty_connector.py
 #
-# Copyright (c) 2019-2025 Splunk Inc.
+# Copyright (c) 2019-2026 Splunk Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -30,6 +30,13 @@ from phantom.action_result import ActionResult
 from phantom.base_connector import BaseConnector
 
 from awsguardduty_consts import *
+from awsguardduty_security import (
+    record_pagination_token,
+    severity_criterion,
+    severity_label,
+    unresolved_finding_ids,
+    utc_milliseconds,
+)
 
 
 class RetVal(tuple):
@@ -376,8 +383,10 @@ class AwsGuarddutyConnector(BaseConnector):
                 return action_result.get_status()
 
             for finding in findings_data:
-                if finding.get("Severity"):
-                    finding["Severity"] = AWSGUARDDUTY_SEVERITY_REVERSE_MAP.get(finding.get("Severity"))
+                if finding.get("Severity") is not None:
+                    numeric_severity = finding["Severity"]
+                    finding["SeverityValue"] = numeric_severity
+                    finding["Severity"] = severity_label(numeric_severity) or numeric_severity
 
                     # Parse S3 bucket details
                     try:
@@ -398,22 +407,42 @@ class AwsGuarddutyConnector(BaseConnector):
             self.save_progress("No new findings found to poll")
             return action_result.set_status(phantom.APP_SUCCESS)
 
-        # Updates the last_update_time in the state file
-        if not self.is_poll_now():
-            last_finding = all_findings[(min(len(all_findings), container_count)) - 1]
-            last_updated_at_datetime = datetime.strptime(str(last_finding.get("UpdatedAt")), AWSGUARDDUTY_DATETIME_FORMAT)
-            self._state["last_updated_time"] = int(time.mktime(last_updated_at_datetime.timetuple())) * 1000
-
+        last_successful_updated_at = None
+        save_failures = 0
+        ingested_count = 0
         for finding in all_findings[:container_count]:
-            container_id = self._create_container(finding)
+            try:
+                container_id = self._create_container(finding)
+            except Exception as exc:
+                self.debug_print(f"Failed to create container for finding {finding.get('Id')}: {exc}")
+                container_id = None
 
             if not container_id:
-                continue
+                save_failures += 1
+                break
 
             artifacts_creation_status, artifacts_creation_msg = self._create_artifacts(finding=finding, container_id=container_id)
 
             if phantom.is_fail(artifacts_creation_status):
                 self.debug_print(f"{AWSGUARDDUTY_CREATE_ARTIFACT_ERR_MSG.format(container_id=container_id)}. {artifacts_creation_msg}")
+                save_failures += 1
+                break
+
+            last_successful_updated_at = finding.get("UpdatedAt")
+            ingested_count += 1
+
+        if not self.is_poll_now() and last_successful_updated_at:
+            self._state["last_updated_time"] = utc_milliseconds(last_successful_updated_at)
+
+        summary = action_result.update_summary({})
+        summary["save_failures"] = save_failures
+        summary["successfully_ingested"] = ingested_count
+
+        if save_failures:
+            return action_result.set_status(
+                phantom.APP_ERROR,
+                "GuardDuty polling stopped at the first finding that could not be persisted; it will be retried",
+            )
 
         self.save_progress(f"Total findings available on the UI of AWS GuardDuty: {len(all_findings)}")
 
@@ -511,24 +540,32 @@ class AwsGuarddutyConnector(BaseConnector):
         valid_id_found = False
 
         while findings_ids:
-            ret_val, res = self._make_boto_call(
-                action_result, "get_findings", DetectorId=detector_id, FindingIds=findings_ids[: min(50, len(findings_ids))]
-            )
+            requested_batch = findings_ids[: min(50, len(findings_ids))]
+            ret_val, res = self._make_boto_call(action_result, "get_findings", DetectorId=detector_id, FindingIds=requested_batch)
 
             if phantom.is_fail(ret_val):
                 return False, valid_finding_ids
 
-            if not res.get("Findings"):
+            findings = res.get("Findings") or []
+            unresolved_ids = unresolved_finding_ids(requested_batch, findings)
+            if unresolved_ids:
+                action_result.set_status(
+                    phantom.APP_ERROR,
+                    f"The following finding IDs could not be resolved: {', '.join(unresolved_ids)}",
+                )
+                return False, valid_finding_ids
+
+            if not findings:
                 del findings_ids[: min(50, len(findings_ids))]
                 continue
 
             if self.get_action_identifier() == "update_finding":
-                for finding in res.get("Findings"):
+                for finding in findings:
                     if not valid_id_found:
                         valid_id_found = True
                     valid_finding_ids.append(finding["Id"])
             else:
-                for finding in res.get("Findings"):
+                for finding in findings:
                     if not valid_id_found:
                         valid_id_found = True
                     finding_details = finding.get("Service")
@@ -649,6 +686,8 @@ class AwsGuarddutyConnector(BaseConnector):
 
         list_items = list()
         next_token = None
+        seen_tokens = set()
+        page_count = 0
         dic_map = {
             "list_filters": ["FilterNames"],
             "list_ip_sets": ["IpSetIds"],
@@ -660,6 +699,13 @@ class AwsGuarddutyConnector(BaseConnector):
         set_name = dic_map.get(method_name)[0]
 
         while True:
+            page_count += 1
+            if page_count > AWSGUARDDUTY_MAX_PAGINATION_PAGES:
+                action_result.set_status(
+                    phantom.APP_ERROR,
+                    f"Pagination exceeded the maximum of {AWSGUARDDUTY_MAX_PAGINATION_PAGES} pages",
+                )
+                return None
             if next_token:
                 ret_val, response = self._make_boto_call(
                     action_result, method_name, NextToken=next_token, MaxResults=AWSGUARDDUTY_MAX_PER_PAGE_LIMIT, **kwargs
@@ -679,6 +725,11 @@ class AwsGuarddutyConnector(BaseConnector):
             next_token = response.get("NextToken")
             if not next_token:
                 break
+            try:
+                record_pagination_token(next_token, seen_tokens)
+            except ValueError as exc:
+                action_result.set_status(phantom.APP_ERROR, str(exc))
+                return None
 
         return list_items
 
@@ -747,8 +798,8 @@ class AwsGuarddutyConnector(BaseConnector):
         instance_id = param.get("instance_id")
         severity = param.get("severity")
         if severity:
-            severity = AWSGUARDDUTY_SEVERITY_MAP.get(param.get("severity"))
-            if not severity:
+            severity = severity_criterion(severity)
+            if severity is None:
                 return action_result.set_status(phantom.APP_ERROR, AWSGUARDDUTY_INVALID_SEVERITY_ERR_MSG)
 
         public_ip = param.get("public_ip")
@@ -767,7 +818,7 @@ class AwsGuarddutyConnector(BaseConnector):
             criterion.update({"resource.instanceDetails.instanceId": {"Eq": [instance_id]}})
 
         if severity:
-            criterion.update({"severity": {"Eq": [severity]}})
+            criterion.update({"severity": severity})
 
         if public_ip:
             criterion.update({"resource.instanceDetails.networkInterfaces.publicIp": {"Eq": [public_ip]}})
@@ -798,8 +849,10 @@ class AwsGuarddutyConnector(BaseConnector):
             findings_data = res.get("Findings")
 
             for finding in findings_data:
-                if finding.get("Severity"):
-                    finding["Severity"] = AWSGUARDDUTY_SEVERITY_REVERSE_MAP.get(finding.get("Severity"))
+                if finding.get("Severity") is not None:
+                    numeric_severity = finding["Severity"]
+                    finding["SeverityValue"] = numeric_severity
+                    finding["Severity"] = severity_label(numeric_severity) or numeric_severity
                 action_result.add_data(finding)
 
             del list_findings[: min(50, len(list_findings))]

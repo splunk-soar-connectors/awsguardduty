@@ -11,7 +11,7 @@
 {% block widget_content %}
   <!-- Main Start Block -->
   <!-- File: awsguardduty_run_query.html
-     Copyright (c) 2019-2025 Splunk Inc.
+     Copyright (c) 2019-2026 Splunk Inc.
      Licensed under the Apache License, Version 2.0 (the "License");
      you may not use this file except in compliance with the License.
      You may obtain a copy of the License at
@@ -88,7 +88,7 @@
               <td>Detector ID</td>
               <td>
                 <a href="javascript:;"
-                   onclick="context_menu(this, [{'contains': ['aws guardduty detector id'], 'value':'{{ result.param.detector_id }}' }], 0, {{ container.id }}, null, false);">
+                   onclick="context_menu(this, [{'contains': ['aws guardduty detector id'], 'value':'{{ result.param.detector_id|escapejs }}' }], 0, {{ container.id }}, null, false);">
                   {{ result.param.detector_id }}
                   &nbsp;
                   <span class="fa fa-caret-down" style="font-size: smaller;"></span>
@@ -100,7 +100,7 @@
                 <td>Instance ID</td>
                 <td>
                   <a href="javascript:;"
-                     onclick="context_menu(this, [{'contains': ['aws guardduty instance id'], 'value':'{{ result.param.instance_id }}' }], 0, {{ container.id }}, null, false);">
+                     onclick="context_menu(this, [{'contains': ['aws guardduty instance id'], 'value':'{{ result.param.instance_id|escapejs }}' }], 0, {{ container.id }}, null, false);">
                     {{ result.param.instance_id }}
                     &nbsp;
                     <span class="fa fa-caret-down" style="font-size: smaller;"></span>
@@ -113,7 +113,7 @@
                 <td>Severity</td>
                 <td>
                   <a href="javascript:;"
-                     onclick="context_menu(this, [{'contains': ['aws guardduty severity'], 'value':'{{ result.param.severity }}' }], 0, {{ container.id }}, null, false);">
+                     onclick="context_menu(this, [{'contains': ['aws guardduty severity'], 'value':'{{ result.param.severity|escapejs }}' }], 0, {{ container.id }}, null, false);">
                     {{ result.param.severity }}
                     &nbsp;
                     <span class="fa fa-caret-down" style="font-size: smaller;"></span>
@@ -126,7 +126,7 @@
                 <td>Public IP</td>
                 <td>
                   <a href="javascript:;"
-                     onclick="context_menu(this, [{'contains': ['ip'], 'value':'{{ result.param.public_ip }}' }], 0, {{ container.id }}, null, false);">
+                     onclick="context_menu(this, [{'contains': ['ip'], 'value':'{{ result.param.public_ip|escapejs }}' }], 0, {{ container.id }}, null, false);">
                     {{ result.param.public_ip }}
                     &nbsp;
                     <span class="fa fa-caret-down" style="font-size: smaller;"></span>
@@ -139,7 +139,7 @@
                 <td>Private IP</td>
                 <td>
                   <a href="javascript:;"
-                     onclick="context_menu(this, [{'contains': ['ip'], 'value':'{{ result.param.private_ip }}' }], 0, {{ container.id }}, null, false);">
+                     onclick="context_menu(this, [{'contains': ['ip'], 'value':'{{ result.param.private_ip|escapejs }}' }], 0, {{ container.id }}, null, false);">
                     {{ result.param.private_ip }}
                     &nbsp;
                     <span class="fa fa-caret-down" style="font-size: smaller;"></span>
@@ -170,7 +170,7 @@
                 <tr>
                   <td class="widget-td">
                     <a href="javascript:;"
-                       onclick="context_menu(this, [{'contains': ['aws guardduty finding id'], 'value':'{{ item.Id }}' }], 0, {{ container.id }}, null, false);">
+                       onclick="context_menu(this, [{'contains': ['aws guardduty finding id'], 'value':'{{ item.Id|escapejs }}' }], 0, {{ container.id }}, null, false);">
                       {{ item.Id }}
                       &nbsp;
                       <span class="fa fa-caret-down" style="font-size: smaller;"></span>
@@ -179,7 +179,7 @@
                   <td class="widget-td">
                     {% if item.Resource.InstanceDetails.InstanceId %}
                       <a href="javascript:;"
-                         onclick="context_menu(this, [{'contains': ['aws guardduty instance id'], 'value':'{{ item.Resource.InstanceDetails.InstanceId }}' }], 0, {{ container.id }}, null, false);">
+                         onclick="context_menu(this, [{'contains': ['aws guardduty instance id'], 'value':'{{ item.Resource.InstanceDetails.InstanceId|escapejs }}' }], 0, {{ container.id }}, null, false);">
                         {{ item.Resource.InstanceDetails.InstanceId }}
                         &nbsp;
                         <span class="fa fa-caret-down" style="font-size: smaller;"></span>
@@ -191,7 +191,7 @@
                   <td class="widget-td">
                     {% if item.Severity %}
                       <a href="javascript:;"
-                         onclick="context_menu(this, [{'contains': ['aws guardduty severity'], 'value':'{{ item.Severity }}' }], 0, {{ container.id }}, null, false);">
+                         onclick="context_menu(this, [{'contains': ['aws guardduty severity'], 'value':'{{ item.Severity|escapejs }}' }], 0, {{ container.id }}, null, false);">
                         {{ item.Severity }}
                         &nbsp;
                         <span class="fa fa-caret-down" style="font-size: smaller;"></span>
@@ -205,7 +205,7 @@
                       <td class="widget-td">
                         {% if info.PublicIp %}
                           <a href="javascript:;"
-                             onclick="context_menu(this, [{'contains': ['ip'], 'value':'{{ info.PublicIp }}' }], 0, {{ container.id }}, null, false);">
+                             onclick="context_menu(this, [{'contains': ['ip'], 'value':'{{ info.PublicIp|escapejs }}' }], 0, {{ container.id }}, null, false);">
                             {{ info.PublicIp }}
                             &nbsp;
                             <span class="fa fa-caret-down" style="font-size: smaller;"></span>
@@ -217,7 +217,7 @@
                       <td class="widget-td">
                         {% if info.PrivateIpAddress %}
                           <a href="javascript:;"
-                             onclick="context_menu(this, [{'contains': ['ip'], 'value':'{{ info.PrivateIpAddress }}' }], 0, {{ container.id }}, null, false);">
+                             onclick="context_menu(this, [{'contains': ['ip'], 'value':'{{ info.PrivateIpAddress|escapejs }}' }], 0, {{ container.id }}, null, false);">
                             {{ info.PrivateIpAddress }}
                             &nbsp;
                             <span class="fa fa-caret-down" style="font-size: smaller;"></span>

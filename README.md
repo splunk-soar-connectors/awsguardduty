@@ -193,7 +193,7 @@ For the parameter 'finding_id', if the user provides comma-separated values and 
 PARAMETER | REQUIRED | DESCRIPTION | TYPE | CONTAINS
 --------- | -------- | ----------- | ---- | --------
 **detector_id** | required | The ID of the detector | string | `aws guardduty detector id` |
-**finding_id** | required | The IDs of the findings (Comma separated IDs allowed) | string | `aws guardduty finding id` |
+**finding_id** | required | The IDs of the findings (comma-separated IDs allowed). All IDs must resolve or the action fails. | string | `aws guardduty finding id` |
 **feedback** | required | Feedback value of the finding | string | |
 **comment** | optional | Additional feedback about the finding | string | |
 **credentials** | optional | Assumed role credentials | string | `aws credentials` |
@@ -333,6 +333,7 @@ action_result.data.\*.Service.ResourceRole | string | | TARGET |
 action_result.data.\*.Service.ServiceName | string | | guardduty |
 action_result.data.\*.Service.UserFeedback | string | | USEFUL |
 action_result.data.\*.Severity | string | `aws guardduty severity` | Low |
+action_result.data.\*.SeverityValue | numeric | | 8.7 |
 action_result.data.\*.Title | string | | Unprotected port on EC2 instance i-0d872de1de2ea7640 is being probed |
 action_result.data.\*.Type | string | | Recon:EC2/PortProbeUnprotectedPort |
 action_result.data.\*.UpdatedAt | string | | 2019-04-24T09:06:21.566Z |
@@ -356,7 +357,7 @@ For the parameter 'finding_id', if the user provides comma-separated values and 
 PARAMETER | REQUIRED | DESCRIPTION | TYPE | CONTAINS
 --------- | -------- | ----------- | ---- | --------
 **detector_id** | required | The ID of the detector | string | `aws guardduty detector id` |
-**finding_id** | required | The IDs of the findings (Comma separated IDs allowed) | string | `aws guardduty finding id` |
+**finding_id** | required | The IDs of the findings (comma-separated IDs allowed). All IDs must resolve or the action fails. | string | `aws guardduty finding id` |
 **credentials** | optional | Assumed role credentials | string | `aws credentials` |
 
 #### Action Output
@@ -387,7 +388,7 @@ For the parameter 'finding_id', if the user provides comma-separated values and 
 PARAMETER | REQUIRED | DESCRIPTION | TYPE | CONTAINS
 --------- | -------- | ----------- | ---- | --------
 **detector_id** | required | The ID of the detector | string | `aws guardduty detector id` |
-**finding_id** | required | The IDs of the findings (Comma separated IDs allowed) | string | `aws guardduty finding id` |
+**finding_id** | required | The IDs of the findings (comma-separated IDs allowed). All IDs must resolve or the action fails. | string | `aws guardduty finding id` |
 **credentials** | optional | Assumed role credentials | string | `aws credentials` |
 
 #### Action Output
@@ -549,7 +550,7 @@ ______________________________________________________________________
 
 Auto-generated Splunk SOAR Connector documentation.
 
-Copyright 2025 Splunk Inc.
+Copyright 2026 Splunk Inc.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
