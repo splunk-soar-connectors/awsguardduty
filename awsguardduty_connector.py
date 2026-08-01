@@ -18,8 +18,7 @@
 import ast
 import json
 import sys
-import time
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 
 import phantom.app as phantom
 import requests
@@ -296,18 +295,45 @@ class AwsGuarddutyConnector(BaseConnector):
 
         container_count = int(param.get(phantom.APP_JSON_CONTAINER_COUNT))
 
-        end_time = datetime.now()
+        poll_now = self.is_poll_now()
+        end_time = datetime.now(timezone.utc)
 
         # Fetch the start_time of polling for the first run
-        initial_time = int(time.mktime((end_time - timedelta(self._days)).timetuple()) * 1000)
+        initial_time = int((end_time - timedelta(self._days)).timestamp() * 1000)
+        first_run = self._state.get("first_run", True)
+        filter_changed = (filter_name or self._state.get("filter_name")) and filter_name != self._state.get("filter_name")
+        reset_checkpoint = first_run or filter_changed
+        checkpoint_time = initial_time
+        checkpoint_ids = set()
 
-        if (
-            self._state.get("first_run", True)
-            or self.is_poll_now()
-            or ((filter_name or self._state.get("filter_name")) and filter_name != self._state.get("filter_name"))
-        ):
-            criteria_dict = {"updatedAt": {"Gt": initial_time}}
-            if not self.is_poll_now() and self._state.get("first_run", True):
+        if not poll_now:
+            if self._state.get("checkpoint_version") != AWSGUARDDUTY_CHECKPOINT_VERSION:
+                try:
+                    legacy_checkpoint = int(self._state.get("last_updated_time", initial_time))
+                except (TypeError, ValueError):
+                    legacy_checkpoint = initial_time
+                checkpoint_time = min(legacy_checkpoint, initial_time)
+                self._state["last_updated_time"] = checkpoint_time
+                self._state["last_updated_ids"] = []
+                self._state["checkpoint_version"] = AWSGUARDDUTY_CHECKPOINT_VERSION
+            elif not reset_checkpoint:
+                try:
+                    checkpoint_time = int(self._state.get("last_updated_time", initial_time))
+                except (TypeError, ValueError):
+                    checkpoint_time = initial_time
+                checkpoint_ids = {
+                    finding_id for finding_id in self._state.get("last_updated_ids", []) if isinstance(finding_id, str) and finding_id
+                }
+            if reset_checkpoint:
+                checkpoint_time = initial_time
+                checkpoint_ids = set()
+                self._state["last_updated_time"] = checkpoint_time
+                self._state["last_updated_ids"] = []
+                self._state["checkpoint_version"] = AWSGUARDDUTY_CHECKPOINT_VERSION
+
+        if reset_checkpoint or poll_now:
+            criteria_dict = {"updatedAt": {"Gt": max(0, initial_time - AWSGUARDDUTY_CHECKPOINT_OVERLAP_MS)}}
+            if not poll_now and first_run:
                 self._state["first_run"] = False
 
             # Store the 'filter_name' in state file to determine if the value of this parameter gets changed at an interim state
@@ -316,10 +342,9 @@ class AwsGuarddutyConnector(BaseConnector):
             elif not filter_name and self._state.get("filter_name"):
                 self._state.pop("filter_name")
         else:
-            start_time = self._state.get("last_updated_time", initial_time)
-            # Adding 1000 milliseconds for next scheduled run as the Gt filter operator fetches
-            # based on Gteq at an accuracy of 1000 milliseconds due to some bug in AWS GuardDuty API
-            criteria_dict = {"updatedAt": {"Gt": start_time + 1000}}
+            # GuardDuty evaluates this boundary at one-second accuracy. Query an
+            # overlap and suppress only findings proven durable at the checkpoint.
+            criteria_dict = {"updatedAt": {"Gt": max(0, checkpoint_time - AWSGUARDDUTY_CHECKPOINT_OVERLAP_MS)}}
 
         if not self._state.get("detector_id"):
             # Getting the detectors ID
@@ -353,7 +378,7 @@ class AwsGuarddutyConnector(BaseConnector):
             pass
         # Creating the sorting criteria according to the polling method(poll now / scheduling)
         sort_criteria = {"AttributeName": "updatedAt", "OrderBy": "ASC"}
-        if self.is_poll_now():
+        if poll_now:
             sort_criteria = {"AttributeName": "updatedAt", "OrderBy": "DESC"}
 
         kwargs = {"DetectorId": detector_id, "SortCriteria": sort_criteria}
@@ -425,10 +450,37 @@ class AwsGuarddutyConnector(BaseConnector):
             self.save_progress("No new findings found to poll")
             return action_result.set_status(phantom.APP_SUCCESS)
 
+        if not poll_now:
+            pending_findings = []
+            malformed_findings = []
+            for finding in all_findings:
+                try:
+                    updated_at_ms = utc_milliseconds(finding.get("UpdatedAt"))
+                except (TypeError, ValueError):
+                    malformed_findings.append(finding)
+                    continue
+                finding_id = finding.get("Id")
+                if updated_at_ms < checkpoint_time or (updated_at_ms == checkpoint_time and finding_id in checkpoint_ids):
+                    continue
+                pending_findings.append((updated_at_ms, str(finding_id or ""), finding))
+            pending_findings.sort(key=lambda item: (item[0], item[1]))
+            all_findings = malformed_findings + [item[2] for item in pending_findings]
+
         last_successful_updated_at = None
+        next_checkpoint_time = checkpoint_time
+        next_checkpoint_ids = set(checkpoint_ids)
+        checkpoint_blocked = False
         save_failures = 0
         ingested_count = 0
         for finding in all_findings[:container_count]:
+            try:
+                finding_updated_at = utc_milliseconds(finding.get("UpdatedAt"))
+            except (TypeError, ValueError):
+                self.debug_print(f"Finding {finding.get('Id')} has an invalid UpdatedAt value")
+                save_failures += 1
+                checkpoint_blocked = True
+                continue
+
             try:
                 container_id = self._create_container(finding)
             except Exception as exc:
@@ -437,20 +489,32 @@ class AwsGuarddutyConnector(BaseConnector):
 
             if not container_id:
                 save_failures += 1
-                break
+                checkpoint_blocked = True
+                continue
 
             artifacts_creation_status, artifacts_creation_msg = self._create_artifacts(finding=finding, container_id=container_id)
 
             if phantom.is_fail(artifacts_creation_status):
                 self.debug_print(f"{AWSGUARDDUTY_CREATE_ARTIFACT_ERR_MSG.format(container_id=container_id)}. {artifacts_creation_msg}")
                 save_failures += 1
-                break
+                checkpoint_blocked = True
+                continue
 
             last_successful_updated_at = finding.get("UpdatedAt")
             ingested_count += 1
 
-        if not self.is_poll_now() and last_successful_updated_at:
-            self._state["last_updated_time"] = utc_milliseconds(last_successful_updated_at)
+            if not poll_now and not checkpoint_blocked:
+                finding_id = finding.get("Id")
+                if finding_updated_at > next_checkpoint_time:
+                    next_checkpoint_time = finding_updated_at
+                    next_checkpoint_ids = {finding_id} if finding_id else set()
+                elif finding_updated_at == next_checkpoint_time and finding_id:
+                    next_checkpoint_ids.add(finding_id)
+
+        if not poll_now and last_successful_updated_at and next_checkpoint_time >= checkpoint_time:
+            self._state["last_updated_time"] = next_checkpoint_time
+            self._state["last_updated_ids"] = sorted(next_checkpoint_ids)
+            self._state["checkpoint_version"] = AWSGUARDDUTY_CHECKPOINT_VERSION
 
         summary = action_result.update_summary({})
         summary["save_failures"] = save_failures
@@ -459,7 +523,7 @@ class AwsGuarddutyConnector(BaseConnector):
         if save_failures:
             return action_result.set_status(
                 phantom.APP_ERROR,
-                "GuardDuty polling stopped at the first finding that could not be persisted; it will be retried",
+                "GuardDuty polling encountered findings that could not be persisted; the checkpoint remains before the first failure",
             )
 
         self.save_progress(f"Total findings available on the UI of AWS GuardDuty: {len(all_findings)}")
