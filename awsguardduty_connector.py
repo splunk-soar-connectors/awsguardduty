@@ -57,6 +57,10 @@ class AwsGuarddutyConnector(BaseConnector):
         self._base_url = None
         self._proxy = None
 
+    @staticmethod
+    def _sanitize_action_parameters(param):
+        return {key: value for key, value in param.items() if key != "credentials"}
+
     def _handle_py_ver_compat_for_input_str(self, input_str, always_encode=False):
         """
         This method returns the encoded|original string based on the Python version.
@@ -198,7 +202,7 @@ class AwsGuarddutyConnector(BaseConnector):
         :return: Status(phantom.APP_SUCCESS/phantom.APP_ERROR)
         """
 
-        action_result = self.add_action_result(ActionResult(dict(param)))
+        action_result = self.add_action_result(ActionResult(self._sanitize_action_parameters(param)))
 
         self.save_progress("Connecting to endpoint")
 
@@ -269,7 +273,7 @@ class AwsGuarddutyConnector(BaseConnector):
 
         self.debug_print(f"In action handler for: {self.get_action_identifier()}")
         self.save_progress(f"In action handler for: {self.get_action_identifier()}")
-        action_result = self.add_action_result(ActionResult(dict(param)))
+        action_result = self.add_action_result(ActionResult(self._sanitize_action_parameters(param)))
 
         if phantom.is_fail(self._create_client(action_result, param)):
             return action_result.get_status()
@@ -477,7 +481,7 @@ class AwsGuarddutyConnector(BaseConnector):
         :param comment: Additional feedback about the finding
         return: Details of updated finding
         """
-        action_result = self.add_action_result(ActionResult(dict(param)))
+        action_result = self.add_action_result(ActionResult(self._sanitize_action_parameters(param)))
 
         if phantom.is_fail(self._create_client(action_result, param)):
             return action_result.get_status()
@@ -599,7 +603,7 @@ class AwsGuarddutyConnector(BaseConnector):
         :param finding_id: The ID of the finding
         return: Details of archived finding
         """
-        action_result = self.add_action_result(ActionResult(dict(param)))
+        action_result = self.add_action_result(ActionResult(self._sanitize_action_parameters(param)))
 
         if phantom.is_fail(self._create_client(action_result, param)):
             return action_result.get_status()
@@ -643,7 +647,7 @@ class AwsGuarddutyConnector(BaseConnector):
         :param finding_id: The ID of the finding
         return: Details of unarchived findings
         """
-        action_result = self.add_action_result(ActionResult(dict(param)))
+        action_result = self.add_action_result(ActionResult(self._sanitize_action_parameters(param)))
 
         if phantom.is_fail(self._create_client(action_result, param)):
             return action_result.get_status()
@@ -740,7 +744,7 @@ class AwsGuarddutyConnector(BaseConnector):
         :param limit: Maximum results to be fetched
         """
 
-        action_result = self.add_action_result(ActionResult(dict(param)))
+        action_result = self.add_action_result(ActionResult(self._sanitize_action_parameters(param)))
 
         if phantom.is_fail(self._create_client(action_result, param)):
             return action_result.get_status()
@@ -789,7 +793,7 @@ class AwsGuarddutyConnector(BaseConnector):
         :param limit: Maximum results to be fetched
         """
 
-        action_result = self.add_action_result(ActionResult(dict(param)))
+        action_result = self.add_action_result(ActionResult(self._sanitize_action_parameters(param)))
 
         if phantom.is_fail(self._create_client(action_result, param)):
             return action_result.get_status()
@@ -871,7 +875,7 @@ class AwsGuarddutyConnector(BaseConnector):
 
         self.save_progress(f"In action handler for: {self.get_action_identifier()}")
 
-        action_result = self.add_action_result(ActionResult(dict(param)))
+        action_result = self.add_action_result(ActionResult(self._sanitize_action_parameters(param)))
 
         if phantom.is_fail(self._create_client(action_result, param)):
             return action_result.get_status()
@@ -919,7 +923,7 @@ class AwsGuarddutyConnector(BaseConnector):
 
         self.save_progress(f"In action handler for: {self.get_action_identifier()}")
 
-        action_result = self.add_action_result(ActionResult(dict(param)))
+        action_result = self.add_action_result(ActionResult(self._sanitize_action_parameters(param)))
 
         if phantom.is_fail(self._create_client(action_result, param)):
             return action_result.get_status()
@@ -963,7 +967,7 @@ class AwsGuarddutyConnector(BaseConnector):
         Lists detectorIds of all the existing Amazon GuardDuty detector resources
         """
 
-        action_result = self.add_action_result(ActionResult(dict(param)))
+        action_result = self.add_action_result(ActionResult(self._sanitize_action_parameters(param)))
 
         if phantom.is_fail(self._create_client(action_result, param)):
             return action_result.get_status()
