@@ -715,6 +715,7 @@ class AwsGuarddutyConnector(BaseConnector):
         }
 
         set_name = dic_map.get(method_name)[0]
+        item_limit = limit or AWSGUARDDUTY_MAX_PAGINATION_ITEMS
 
         while True:
             page_count += 1
@@ -724,18 +725,29 @@ class AwsGuarddutyConnector(BaseConnector):
                     f"Pagination exceeded the maximum of {AWSGUARDDUTY_MAX_PAGINATION_PAGES} pages",
                 )
                 return None
+            remaining = item_limit - len(list_items)
+            request_limit = min(AWSGUARDDUTY_MAX_PER_PAGE_LIMIT, remaining)
+            if request_limit <= 0:
+                return list_items[:item_limit]
             if next_token:
-                ret_val, response = self._make_boto_call(
-                    action_result, method_name, NextToken=next_token, MaxResults=AWSGUARDDUTY_MAX_PER_PAGE_LIMIT, **kwargs
-                )
+                ret_val, response = self._make_boto_call(action_result, method_name, NextToken=next_token, MaxResults=request_limit, **kwargs)
             else:
-                ret_val, response = self._make_boto_call(action_result, method_name, MaxResults=AWSGUARDDUTY_MAX_PER_PAGE_LIMIT, **kwargs)
+                ret_val, response = self._make_boto_call(action_result, method_name, MaxResults=request_limit, **kwargs)
 
             if phantom.is_fail(ret_val):
                 return None
 
-            if response.get(set_name):
-                list_items.extend(response.get(set_name))
+            page_items = response.get(set_name, [])
+            if not isinstance(page_items, list):
+                action_result.set_status(phantom.APP_ERROR, f"GuardDuty returned an invalid {set_name} page")
+                return None
+            if len(page_items) > request_limit or len(list_items) + len(page_items) > item_limit:
+                action_result.set_status(
+                    phantom.APP_ERROR,
+                    f"GuardDuty pagination exceeded the maximum of {item_limit} {set_name}",
+                )
+                return None
+            list_items.extend(page_items)
 
             if limit and len(list_items) >= limit:
                 return list_items[:limit]
