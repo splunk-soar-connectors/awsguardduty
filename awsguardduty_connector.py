@@ -137,28 +137,42 @@ class AwsGuarddutyConnector(BaseConnector):
         if self._proxy:
             boto_config = Config(proxies=self._proxy)
 
-        # Try getting and using temporary assume role credentials from parameters
-        temp_credentials = dict()
+        access_key = self._access_key
+        secret_key = self._secret_key
+        session_token = self._session_token
+
+        # Use action-scoped credentials only for this client. Never copy them onto
+        # the connector because a later action must return to the asset identity.
         if param and "credentials" in param:
             try:
                 temp_credentials = ast.literal_eval(param["credentials"])
-                self._access_key = temp_credentials.get("AccessKeyId", "")
-                self._secret_key = temp_credentials.get("SecretAccessKey", "")
-                self._session_token = temp_credentials.get("SessionToken", "")
-
-                self.save_progress("Using temporary assume role credentials for action")
             except Exception as e:
                 return action_result.set_status(phantom.APP_ERROR, f"Failed to get temporary credentials: {e}")
 
+            if not isinstance(temp_credentials, dict):
+                return action_result.set_status(phantom.APP_ERROR, "Temporary credentials must be a dictionary")
+
+            access_key = temp_credentials.get("AccessKeyId")
+            secret_key = temp_credentials.get("SecretAccessKey")
+            session_token = temp_credentials.get("SessionToken")
+            if not isinstance(access_key, str) or not access_key.strip():
+                return action_result.set_status(phantom.APP_ERROR, "Temporary credentials are missing AccessKeyId")
+            if not isinstance(secret_key, str) or not secret_key.strip():
+                return action_result.set_status(phantom.APP_ERROR, "Temporary credentials are missing SecretAccessKey")
+            if session_token is not None and not isinstance(session_token, str):
+                return action_result.set_status(phantom.APP_ERROR, "Temporary SessionToken must be a string")
+
+            self.save_progress("Using temporary assume role credentials for action")
+
         try:
-            if self._access_key and self._secret_key:
+            if access_key and secret_key:
                 self.debug_print("Creating boto3 client with API keys")
                 self._client = client(
                     "guardduty",
                     region_name=self._region,
-                    aws_access_key_id=self._access_key,
-                    aws_secret_access_key=self._secret_key,
-                    aws_session_token=self._session_token,
+                    aws_access_key_id=access_key,
+                    aws_secret_access_key=secret_key,
+                    aws_session_token=session_token,
                     config=boto_config,
                 )
             else:
