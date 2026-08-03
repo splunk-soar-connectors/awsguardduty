@@ -210,7 +210,6 @@ action_result.summary.total_updated_findings | numeric | | 1 |
 action_result.message | string | | Total updated findings: 1 |
 summary.total_objects | numeric | | 1 |
 summary.total_objects_successful | numeric | | 1 |
-action_result.parameter.credentials | password | `aws credentials` | |
 
 ## action: 'run query'
 
@@ -339,7 +338,6 @@ action_result.summary.total_findings | numeric | | 1 7 |
 action_result.message | string | | Total findings: 1 Total findings: 7 |
 summary.total_objects | numeric | | 1 |
 summary.total_objects_successful | numeric | | 1 |
-action_result.parameter.credentials | password | `aws credentials` | |
 
 ## action: 'archive finding'
 
@@ -370,7 +368,6 @@ action_result.summary.total_findings | numeric | | 1 |
 action_result.message | string | | Successfully archived the findings |
 summary.total_objects | numeric | | 1 |
 summary.total_objects_successful | numeric | | 1 |
-action_result.parameter.credentials | password | `aws credentials` | |
 
 ## action: 'unarchive finding'
 
@@ -401,7 +398,6 @@ action_result.summary.total_findings | numeric | | 0 1 |
 action_result.message | string | | Successfully unarchived the findings |
 summary.total_objects | numeric | | 1 |
 summary.total_objects_successful | numeric | | 1 |
-action_result.parameter.credentials | password | `aws credentials` | |
 
 ## action: 'list filters'
 
@@ -442,7 +438,6 @@ action_result.summary.total_filters | numeric | | 1 3 |
 action_result.message | string | | Total filters: 1 Total filters: 3 |
 summary.total_objects | numeric | | 1 |
 summary.total_objects_successful | numeric | | 1 |
-action_result.parameter.credentials | password | `aws credentials` | |
 
 ## action: 'list threats'
 
@@ -475,7 +470,6 @@ action_result.summary.total_threats | numeric | | 2 |
 action_result.message | string | | Total threats: 2 |
 summary.total_objects | numeric | | 1 |
 summary.total_objects_successful | numeric | | 1 |
-action_result.parameter.credentials | password | `aws credentials` | |
 
 ## action: 'list ip sets'
 
@@ -508,7 +502,6 @@ action_result.summary.total_ip_sets | numeric | | 1 |
 action_result.message | string | | Total ip sets: 1 |
 summary.total_objects | numeric | | 1 |
 summary.total_objects_successful | numeric | | 1 |
-action_result.parameter.credentials | password | `aws credentials` | |
 
 ## action: 'list detectors'
 
@@ -542,7 +535,6 @@ action_result.summary.total_detectors | numeric | | 0 1 |
 action_result.message | string | | Total detectors: 0 Total detectors: 1 |
 summary.total_objects | numeric | | 1 |
 summary.total_objects_successful | numeric | | 1 |
-action_result.parameter.credentials | password | `aws credentials` | |
 
 ______________________________________________________________________
 
