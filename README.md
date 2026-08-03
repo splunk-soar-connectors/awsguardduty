@@ -171,13 +171,11 @@ PARAMETER | REQUIRED | DESCRIPTION | TYPE | CONTAINS
 **end_time** | optional | End of time range, in epoch time (milliseconds) | numeric | |
 **container_count** | optional | Maximum number of container records to query for | numeric | |
 **artifact_count** | optional | Maximum number of artifact records to query for | numeric | |
-**credentials** | optional | Assumed role credentials | string | `aws credentials` |
+**credentials** | optional | Assumed role credentials | password | `aws credentials` |
 
 #### Action Output
 
-DATA PATH | TYPE | CONTAINS | EXAMPLE VALUES
---------- | ---- | -------- | --------------
-action_result.parameter.credentials | string | `aws credentials` | {'AccessKeyId': 'REDACTED', 'Expiration': 'REDACTED', 'SecretAccessKey': 'REDACTED', 'SessionToken': 'REDACTED'} |
+No Output
 
 ## action: 'update finding'
 
@@ -196,7 +194,7 @@ PARAMETER | REQUIRED | DESCRIPTION | TYPE | CONTAINS
 **finding_id** | required | The IDs of the findings (comma-separated IDs allowed). All IDs must resolve or the action fails. | string | `aws guardduty finding id` |
 **feedback** | required | Feedback value of the finding | string | |
 **comment** | optional | Additional feedback about the finding | string | |
-**credentials** | optional | Assumed role credentials | string | `aws credentials` |
+**credentials** | optional | Assumed role credentials | password | `aws credentials` |
 
 #### Action Output
 
@@ -212,7 +210,6 @@ action_result.summary.total_updated_findings | numeric | | 1 |
 action_result.message | string | | Total updated findings: 1 |
 summary.total_objects | numeric | | 1 |
 summary.total_objects_successful | numeric | | 1 |
-action_result.parameter.credentials | string | `aws credentials` | {'AccessKeyId': 'REDACTED', 'Expiration': 'REDACTED', 'SecretAccessKey': 'REDACTED', 'SessionToken': 'REDACTED'} |
 
 ## action: 'run query'
 
@@ -231,7 +228,7 @@ PARAMETER | REQUIRED | DESCRIPTION | TYPE | CONTAINS
 **public_ip** | optional | Public IP address of the EC2 instance | string | `ip` |
 **private_ip** | optional | Private IP address of the EC2 instance | string | `ip` |
 **limit** | optional | The maximum number of results to be fetched. If not provided, then all the results will be fetched | numeric | |
-**credentials** | optional | Assumed role credentials | string | `aws credentials` |
+**credentials** | optional | Assumed role credentials | password | `aws credentials` |
 
 #### Action Output
 
@@ -341,7 +338,6 @@ action_result.summary.total_findings | numeric | | 1 7 |
 action_result.message | string | | Total findings: 1 Total findings: 7 |
 summary.total_objects | numeric | | 1 |
 summary.total_objects_successful | numeric | | 1 |
-action_result.parameter.credentials | string | `aws credentials` | {'AccessKeyId': 'REDACTED', 'Expiration': 'REDACTED', 'SecretAccessKey': 'REDACTED', 'SessionToken': 'REDACTED'} |
 
 ## action: 'archive finding'
 
@@ -358,7 +354,7 @@ PARAMETER | REQUIRED | DESCRIPTION | TYPE | CONTAINS
 --------- | -------- | ----------- | ---- | --------
 **detector_id** | required | The ID of the detector | string | `aws guardduty detector id` |
 **finding_id** | required | The IDs of the findings (comma-separated IDs allowed). All IDs must resolve or the action fails. | string | `aws guardduty finding id` |
-**credentials** | optional | Assumed role credentials | string | `aws credentials` |
+**credentials** | optional | Assumed role credentials | password | `aws credentials` |
 
 #### Action Output
 
@@ -372,7 +368,6 @@ action_result.summary.total_findings | numeric | | 1 |
 action_result.message | string | | Successfully archived the findings |
 summary.total_objects | numeric | | 1 |
 summary.total_objects_successful | numeric | | 1 |
-action_result.parameter.credentials | string | `aws credentials` | {'AccessKeyId': 'REDACTED', 'Expiration': 'REDACTED', 'SecretAccessKey': 'REDACTED', 'SessionToken': 'REDACTED'} |
 
 ## action: 'unarchive finding'
 
@@ -389,7 +384,7 @@ PARAMETER | REQUIRED | DESCRIPTION | TYPE | CONTAINS
 --------- | -------- | ----------- | ---- | --------
 **detector_id** | required | The ID of the detector | string | `aws guardduty detector id` |
 **finding_id** | required | The IDs of the findings (comma-separated IDs allowed). All IDs must resolve or the action fails. | string | `aws guardduty finding id` |
-**credentials** | optional | Assumed role credentials | string | `aws credentials` |
+**credentials** | optional | Assumed role credentials | password | `aws credentials` |
 
 #### Action Output
 
@@ -403,7 +398,6 @@ action_result.summary.total_findings | numeric | | 0 1 |
 action_result.message | string | | Successfully unarchived the findings |
 summary.total_objects | numeric | | 1 |
 summary.total_objects_successful | numeric | | 1 |
-action_result.parameter.credentials | string | `aws credentials` | {'AccessKeyId': 'REDACTED', 'Expiration': 'REDACTED', 'SecretAccessKey': 'REDACTED', 'SessionToken': 'REDACTED'} |
 
 ## action: 'list filters'
 
@@ -418,7 +412,7 @@ PARAMETER | REQUIRED | DESCRIPTION | TYPE | CONTAINS
 --------- | -------- | ----------- | ---- | --------
 **detector_id** | required | The ID of the detector | string | `aws guardduty detector id` |
 **limit** | optional | The maximum number of filters to be fetched | numeric | |
-**credentials** | optional | Assumed role credentials | string | `aws credentials` |
+**credentials** | optional | Assumed role credentials | password | `aws credentials` |
 
 #### Action Output
 
@@ -444,7 +438,6 @@ action_result.summary.total_filters | numeric | | 1 3 |
 action_result.message | string | | Total filters: 1 Total filters: 3 |
 summary.total_objects | numeric | | 1 |
 summary.total_objects_successful | numeric | | 1 |
-action_result.parameter.credentials | string | `aws credentials` | {'AccessKeyId': 'REDACTED', 'Expiration': 'REDACTED', 'SecretAccessKey': 'REDACTED', 'SessionToken': 'REDACTED'} |
 
 ## action: 'list threats'
 
@@ -459,7 +452,7 @@ PARAMETER | REQUIRED | DESCRIPTION | TYPE | CONTAINS
 --------- | -------- | ----------- | ---- | --------
 **detector_id** | required | The ID of the detector | string | `aws guardduty detector id` |
 **limit** | optional | The maximum number of threat intel sets to be fetched. If not provided, then all the threat intel sets will be fetched | numeric | |
-**credentials** | optional | Assumed role credentials | string | `aws credentials` |
+**credentials** | optional | Assumed role credentials | password | `aws credentials` |
 
 #### Action Output
 
@@ -477,7 +470,6 @@ action_result.summary.total_threats | numeric | | 2 |
 action_result.message | string | | Total threats: 2 |
 summary.total_objects | numeric | | 1 |
 summary.total_objects_successful | numeric | | 1 |
-action_result.parameter.credentials | string | `aws credentials` | {'AccessKeyId': 'REDACTED', 'Expiration': 'REDACTED', 'SecretAccessKey': 'REDACTED', 'SessionToken': 'REDACTED'} |
 
 ## action: 'list ip sets'
 
@@ -492,7 +484,7 @@ PARAMETER | REQUIRED | DESCRIPTION | TYPE | CONTAINS
 --------- | -------- | ----------- | ---- | --------
 **detector_id** | required | The ID of the detector | string | `aws guardduty detector id` |
 **limit** | optional | The maximum number of IP sets to be fetched. If not provided, then all the IP sets will be fetched | numeric | |
-**credentials** | optional | Assumed role credentials | string | `aws credentials` |
+**credentials** | optional | Assumed role credentials | password | `aws credentials` |
 
 #### Action Output
 
@@ -510,7 +502,6 @@ action_result.summary.total_ip_sets | numeric | | 1 |
 action_result.message | string | | Total ip sets: 1 |
 summary.total_objects | numeric | | 1 |
 summary.total_objects_successful | numeric | | 1 |
-action_result.parameter.credentials | string | `aws credentials` | {'AccessKeyId': 'REDACTED', 'Expiration': 'REDACTED', 'SecretAccessKey': 'REDACTED', 'SessionToken': 'REDACTED'} |
 
 ## action: 'list detectors'
 
@@ -523,7 +514,7 @@ Read only: **True**
 
 PARAMETER | REQUIRED | DESCRIPTION | TYPE | CONTAINS
 --------- | -------- | ----------- | ---- | --------
-**credentials** | optional | Assumed role credentials | string | `aws credentials` |
+**credentials** | optional | Assumed role credentials | password | `aws credentials` |
 
 #### Action Output
 
@@ -544,7 +535,6 @@ action_result.summary.total_detectors | numeric | | 0 1 |
 action_result.message | string | | Total detectors: 0 Total detectors: 1 |
 summary.total_objects | numeric | | 1 |
 summary.total_objects_successful | numeric | | 1 |
-action_result.parameter.credentials | string | `aws credentials` | {'AccessKeyId': 'REDACTED', 'Expiration': 'REDACTED', 'SecretAccessKey': 'REDACTED', 'SessionToken': 'REDACTED'} |
 
 ______________________________________________________________________
 
